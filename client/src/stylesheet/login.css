@@ -1,0 +1,116 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--background);
+}
+
+.login-container .login {
+    width: 25rem;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 1rem;
+}
+
+.login-container .login h1 {
+    font-size: 1.5rem;
+    font-weight: 100;
+    color: var(--text-colour);
+    margin-bottom: 1rem;
+}
+
+.login-container .login .login-error-message {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 1rem;
+    width: 80%;
+    color: red;
+    border-radius: 0.5rem;
+}
+
+.login-container .login .login-input {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.login-container .login .login-input input {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    background-color: transparent;
+    border-bottom: 1px solid var(--border-standard);
+}
+
+.login-container .login .login-input input:focus {
+    outline: none;
+}
+
+.login-container .login .login-input .login-extra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+}
+
+.login-container .login .login-input .login-extra .login-remember{
+    display: flex;
+    align-items: center;
+    width: 1rem;
+}
+
+.login-container .login .login-input .login-extra .login-remember label {
+    margin-left: 0.5rem;
+    color: var(--text-colour);
+    white-space: nowrap;
+}
+
+.login-container .login .login-input .login-extra a {
+    text-decoration: none;
+    color: var(--text-colour);
+}
+
+.login-container .login .login-input .login-extra a:hover,
+.login-container .login .login-input .login-extra .login-remember label:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.login-container .login .login-input button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 1rem;
+    border: none;
+    background-color: var(--background-secondary);
+    color: var(--text-colour);
+    cursor: pointer;
+    border-radius: 0.5rem;
+}
+
+.login-container .login .login-input button[type="submit"]:hover {
+    background-color: var(--background-hover);
+}
+
+.login-container .login .login-signup {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-colour);
+}
+
+.login-container .login .login-signup a {
+    text-decoration: none;
+    color: var(--text-colour-tertiary);
+}
+
+.login-container .login .login-signup a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

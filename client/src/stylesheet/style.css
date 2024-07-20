@@ -1,0 +1,50 @@
+@import "colour.css";
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--background);
+}
+
+.main-container {
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    font-size: .75em;
+    position: absolute;
+    width: fit-content;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    background-color: var(--background-secondary);
+    color: var(--text-colour);
+    border: 1px solid var(--border-standard);
+    text-align: center;
+    padding: .5em;
+    border-radius: .5em;
+    transition: all 0.4s 1s ease;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.tooltip:not(:hover) .tooltiptext {
+    visibility: hidden;
+    transition: visibility 0s;
+}

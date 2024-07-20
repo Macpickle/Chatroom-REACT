@@ -1,0 +1,13 @@
+:root {
+    --background: #f9f9f9;
+    --background-secondary: #efefef;
+    --background-tertiary: #dedede;
+    --background-hover: #e0e0e0;
+    --background-hover-secondary: #e9e9e9;
+    --border-standard: #cacaca;
+    --icon-colour: #5d5d5d;
+    --text-colour: #5d5d5d;
+    --text-colour-secondary: #7d7d7d;
+    --text-colour-tertiary: #7d7d7d;
+    --text-colour-title: #e6e6e6;
+}
