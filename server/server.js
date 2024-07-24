@@ -5,10 +5,10 @@ const app = express();
 const externalRouter = require('./routes/routes');
 const errorHandler = require('./middleware/errorHandler');
 const cors = require('cors');
-const session = require('express-session');
 const flash = require('express-flash');
 const passport = require('passport');
 const initpassport = require('./utils/passport-config');
+const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const mongoose = require('mongoose');
 
@@ -22,7 +22,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-app.use(externalRouter);
 app.use(errorHandler);
 
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';
@@ -58,14 +57,17 @@ app.use(session({
 app.use(flash());
 
 //initialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.urlencoded({extended: false}));
+app.use(express.json());
+app.use(externalRouter);
+
 initpassport(
     passport,
     async username => await User.findOne({ username: username }),
     async id => await User.findOne({ _id: id })
 );
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(express.urlencoded({extended: false}));
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

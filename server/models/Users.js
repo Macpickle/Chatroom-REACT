@@ -13,6 +13,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Email is required']
     },
+    photo: {
+        type: String,
+        default: "https://www.w3schools.com/howto/img_avatar.png",
+        required: [true, 'Photo is required']
+    },
+
 });
 
 module.exports = mongoose.model('User', userSchema);

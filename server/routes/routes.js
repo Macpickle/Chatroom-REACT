@@ -4,7 +4,9 @@ const bcrypt = require('bcrypt');
 const appError = require('../utils/appError.js');
 const {USER_ALREADY_EXISTS,
       INVALID_LOGIN_CREDENTIALS,
-      FIELD_MISSING
+      FIELD_MISSING,
+      INVALID_CREDENTIALS,
+      CHAT_NOT_FOUND,
       } = require('../constants/constants');
 
 const { tryCatch } = require('../utils/tryCatch');
@@ -14,19 +16,21 @@ const { forgetPassword, resetPassword } = require('../controllers/auth');
 
 //models
 const User = require('../models/Users');
+const Message = require('../models/messages');
+
+const formattedDate = () => {
+    const date = new Date();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
 
 //forget password
 router.post('/api/forget-password', forgetPassword);
 
 //reset password
 router.post('/api/reset-password', resetPassword);
-
-//check if there is a current session of user/ if user is logged in
-router.get('/api/is-authenticated', tryCatch(async (req, res) => {
-    console.log(req.session);
-    
-    return false;
-}));
 
 //register new user
 router.post('/api/register', tryCatch(async (req, res) => {
@@ -71,9 +75,53 @@ router.post('/api/login', passport.authenticate('local', {
     failureRedirect: '/api/login',
     failureFlash: true,
 }), (req,res) => {
-    console.log('login good');
-}
+    res.status(200).json({
+        status: 'ok',
+        message: 'Login successful',
+        username: req.user.username,
+    });
+});
+
+//logout user
+router.get('/api/logout', (req, res) => {
+    req.logout();
+    res.clearCookie('sid');
+    res.status(200).json({
+        status: 'ok',
+        message: 'User logged out',
+    });
+});
+
+//handle messaging
+router.get('/api/messages', tryCatch(async (req, res) => {
+    const { username } = req.query;
+    const messages = await Message.find({ members: username });
+    res.json({messages});
+}));
+
+//create a new message
+router.post('/api/messages', tryCatch(async (req, res) => {
+    const { members, message, sender } = req.body;
+
+    if (!message) {
+        throw new appError(FIELD_MISSING, 'Message is empty!', 401);
+    }
     
-);
+    const messageArray = {
+        "message": message,
+        "sender": sender,
+        "time": formattedDate(),
+    }
+
+    const newMessage = new Message({
+        members: members,
+        messages: [messageArray],
+        recentMessage: message,
+        recentMessageTime: formattedDate(),
+    });
+
+    await newMessage.save();
+    res.json({message: 'Message created successfully', status: 'ok'});
+}));
 
 module.exports = router;

@@ -1,0 +1,123 @@
+@import "colour.css";
+
+.sidenav-container {
+    width: 20rem;
+    height: calc(100vh - 4rem);
+    background-color: var(--background-colour);
+    border-right: 1px solid var(--border-standard);
+    position: fixed;
+    top: 4rem;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidenav-container .sidenav-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-standard);
+    display:flex;
+    flex-direction: column;
+}
+
+.sidenav-container .sidenav-header .sidenav-inline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.sidenav-container .sidenav-header h2 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-colour);
+}
+
+.sidenav-container .sidenav-header .sidenav-search {
+    margin-top: 0.25rem;
+}
+
+.sidenav-container .sidenav-header .sidenav-search input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-standard);
+    border-radius: 1rem;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg");
+    background-size: 13px;
+    background-repeat: no-repeat;
+    background-position: 10px center;
+    padding-left: 30px;
+}
+
+.sidenav-container .sidenav-header .sidenav-search input:focus {
+    outline: none;
+}
+
+.sidenav-container .sidenav-header .sidenav-button {
+    margin-left: auto;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--icon-colour);
+}
+
+.sidenav-container .sidenav-header .sidenav-button:hover {
+    transform: scale(1.1);
+}
+
+.sidenav-container .sidenav-list {
+    overflow-y: auto;
+    cursor: pointer;
+}
+
+.sidenav-container .sidenav-list .sidenav-button {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    text-align: left;
+}
+
+.sidenav-container .sidenav-list .sidenav-item {
+    padding: 0.5rem;
+    height: 5rem;
+    display: flex;
+}
+
+.sidenav-container .sidenav-list .sidenav-item:hover {
+    background-color: var(--background-hover);
+}
+
+.sidenav-container .sidenav-list .sidenav-item img{
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border-standard);
+}
+
+.sidenav-container .sidenav-list .sidenav-item .details {
+    margin-left: 0.5rem;
+    width: 50%;
+}
+
+.sidenav-container .sidenav-list .sidenav-item .details h3 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-colour);
+}
+
+.sidenav-container .sidenav-list .sidenav-item .details p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--icon-colour);
+}
+
+.sidenav-container .sidenav-list .sidenav-item .time {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    width: 25%;
+}
+
+.sidenav-container .sidenav-list .sidenav-item .time p {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--icon-colour);
+}

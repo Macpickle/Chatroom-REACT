@@ -1,0 +1,180 @@
+.message-container {
+    margin-left: 20rem;
+    height: calc(100vh - 4rem);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    width: calc(100% - 20rem);
+}
+
+.message-container .message-content {
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+}
+
+.message-container .message-content .message {
+    width: 100%;
+    height: 3rem;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+}
+
+.message-container .message-content .message:hover {
+    background-color: var(--background-hover);
+    cursor: pointer;
+}
+
+.message-container .message-content .message:hover .edit-content {
+    display: flex;
+}
+
+.message-container .message-content .message .message-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0.5rem;
+}
+
+.message-container .message-content .message .message-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.message-container .message-content .message .message-header .profile-name {
+    font-size: 1.25rem;
+    display: flex;
+    align-self: flex-start;
+    font-weight: 200;
+}
+
+.message-container .message-content .message .message-header .message-time {
+    font-size: 1rem;
+    margin-left: 0.5rem;
+    color: var(--text-colour-secondary);
+}
+
+.message-container .message-content .message .message-text p {
+    font-size: 1rem;
+}
+
+.message-container .message-content .message .profile-pic {
+    width: 3rem;
+    height: 3rem;
+}
+
+.message-container .message-content .message .profile-pic img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.message-container .message-content .message .message-body {
+    color: var(--text-colour)
+}
+
+.message-container .message-footer {
+    width: 100%;
+    height: 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    padding-top: 0;
+}
+
+.message-container .message-footer h2 {
+    font-size: 1.5rem;
+    font-weight: 100;
+}
+
+
+.message-container .message-footer input {
+    width: calc(100% - 4rem);
+    height: 2.5rem;
+    border: 1px solid var(--border-standard);
+    border-radius: 1rem;
+    padding: 0 1rem;
+}
+
+.message-container .message-footer input:focus {
+    outline: none;
+}
+
+.message-container .message-footer .send-button {
+    width: 7.5rem;
+    height: 2.5rem;
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-standard);
+    background-color: var(--background);
+    margin-left: 0.5rem;
+}
+
+.message-container .message-footer .send-button:hover {
+    background: var(--background-hover);
+}
+
+.message-container .message-footer .attach-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    margin-left: 0.5rem;
+    background-color: var(--background);
+    border: 1px solid var(--border-standard);
+}
+
+.message-container .message-footer .attach-button:hover {
+    background: var(--background-hover);
+}
+
+.edit-content {
+    display: none;
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 1rem;
+    margin-top: -1rem;
+    background-color: var(--background-hover);
+    border-radius: 0.5rem;
+    width: 7.5rem;
+    height: 2rem;
+    border: 1px solid var(--border-standard);
+}
+
+.edit-content .edit-button {
+    width: 25%;
+    height: 1.9rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-content .edit-button:hover {
+    background-color: var(--background-hover-secondary);
+}
+
+.edit-content .edit-button .icon {
+    font-size: 1.25rem;
+    color: var(--text-colour-secondary);
+}
