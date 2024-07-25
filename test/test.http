@@ -15,10 +15,10 @@ POST http://localhost:3000/api/register HTTP/1.1
 Content-Type: application/json
 
 {
-    "username": "asd",
-    "password": "asd",
-    "email": "asd@asd.com",
-    "confirmPassword": "asd"
+    "username": "zxc",
+    "password": "zxc",
+    "email": "zxc@zxc.com",
+    "confirmPassword": "zxc"
 }
 
 ### test login
@@ -39,7 +39,7 @@ POST http://localhost:3000/api/messages HTTP/1.1
 Content-Type: application/json
 
 {
-    "members": ["asd", "qwe"],
-    "message": "hello",
-    "sender": "asd"
+    "members": ["zxc", "qwe"],
+    "message": "yooo",
+    "sender": "zxc"
 }

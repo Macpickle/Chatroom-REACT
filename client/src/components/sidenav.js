@@ -11,6 +11,7 @@ export default function Sidenav({setMessageIdHandler}) {
     }
 
     const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     //populate messages
     useEffect(() => {
@@ -20,10 +21,11 @@ export default function Sidenav({setMessageIdHandler}) {
         }
       })
         .then(response => {
-          setMessages(response.data);
+            setMessages(response.data);
+            setLoading(false);
         })
         .catch(error => {
-          console.error(error);
+            console.error(error);
         });
     }, []);
 
@@ -51,27 +53,26 @@ export default function Sidenav({setMessageIdHandler}) {
                     />
                 </div>
             </div>
-
-            <div className="sidenav-list">
-                {messages.length > 0  ? (
-                    messages.map((message, index) => (
+            {loading ? (
+                <div>Loading...</div>
+            ) : (
+                <div className="sidenav-list">
+                    {messages.messages.map((message, index) => (
                         <button className="sidenav-button" key={index} onClick={() => handleClick(message._id)}>
                             <div className="sidenav-item">
                                 <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
                                 <div className="details">
-                                    <h3>{message.otherUser}</h3>
-                                    <p>{message.lastMessage}</p>
+                                    <h3>{message.members.filter(member => member !== localStorage.getItem('username'))[0]}</h3>
+                                    <p>{message.recentMessage}</p>
                                 </div>
                                 <div className="time">
-                                    <p>{message.lastMessageTime}</p>
+                                    <p>{message.recentMessageTime}</p>
                                 </div>
                             </div>
                         </button>
-                    ))
-                ) : (
-                    <p>No messages found.</p>
-                )}
-            </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

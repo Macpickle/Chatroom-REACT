@@ -94,8 +94,18 @@ router.get('/api/logout', (req, res) => {
 
 //handle messaging
 router.get('/api/messages', tryCatch(async (req, res) => {
-    const { username } = req.query;
-    const messages = await Message.find({ members: username });
+    const { username, messageID } = req.query;
+    var messages = [];
+    if (username) {
+        messages = await Message.find({ members: username });
+    } else if (messageID) {
+        messages = await Message.findById(messageID);
+    } 
+
+    if (!messages) {
+        throw new appError(CHAT_NOT_FOUND, 'Chat not found', 401);
+    }
+
     res.json({messages});
 }));
 

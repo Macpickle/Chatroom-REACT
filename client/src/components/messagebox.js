@@ -9,12 +9,12 @@ export default function MessageBox(message) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [parrentID, setParentID] = useState('');
-
+    
     //populate messages
     useEffect(() => {
         if (message.messageID !== '') {
-            axios.get(`/api/messages`, {
-                data: {
+            axios.get(`http://localhost:3000/api/messages`, {
+                params: {
                     messageID: message.messageID,
                 }
             })
@@ -33,7 +33,8 @@ export default function MessageBox(message) {
     return (
         <div className="message-container">
             <div className="message-content">
-                {messages.map((message, index) => (
+            {messages.length != 0 ? (
+                messages.messages.messages.map((message, index) => (
                     <div className="message" key={index}>
                         <div className="profile-pic">
                             <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
@@ -51,7 +52,10 @@ export default function MessageBox(message) {
                         </div>
                         <EditMessageBox messageID={message.id} parentMessageID={parrentID} />
                     </div>
-                ))}
+                ))
+            ) : (
+                <div></div>
+            )}
             </div>
 
             <div className="message-footer">
