@@ -111,10 +111,19 @@ router.get('/api/messages', tryCatch(async (req, res) => {
 
 //create a new message
 router.post('/api/messages', tryCatch(async (req, res) => {
-    const { members, message, sender } = req.body;
-
+    const { members, message, sender, reciever } = req.body;
     if (!message) {
         throw new appError(FIELD_MISSING, 'Message is empty!', 401);
+    }
+
+    if (sender === reciever) {
+        throw new appError(INVALID_CREDENTIALS, 'Cannot send message to self', 401);
+    }
+
+    const recieverExists = await User.findOne({ username: reciever });
+    
+    if (!recieverExists) {
+        throw new appError(INVALID_CREDENTIALS, 'User does not exist', 401);
     }
     
     const messageArray = {
@@ -132,6 +141,12 @@ router.post('/api/messages', tryCatch(async (req, res) => {
 
     await newMessage.save();
     res.json({message: 'Message created successfully', status: 'ok'});
+}));
+
+//get all users, usernames and photos
+router.get('/api/users', tryCatch(async (req, res) => {
+    const users = await User.find({}, {username: 1, photo: 1});
+    res.json({users});
 }));
 
 module.exports = router;

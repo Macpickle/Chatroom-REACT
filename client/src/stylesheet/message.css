@@ -178,3 +178,94 @@
     font-size: 1.25rem;
     color: var(--text-colour-secondary);
 }
+
+.create-message-container {
+    position: fixed;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.807);
+    z-index: 999;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.create-message-container .create-message-content {
+    width: 40rem;
+    height: 30rem;
+    background-color: var(--background);
+    border-radius: 1rem;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.create-message-container .create-message-content .back-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: -0.5rem;
+    margin-top: -0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    background-color: var(--background);
+    border: none;
+}
+
+.create-message-container .create-message-content .back-button:hover {
+    background: var(--background-hover);
+}
+
+.create-message-container .create-message-content h2 {
+    font-size: 1.5rem;
+    font-weight: 100;
+    margin-top: 0.5rem;
+}
+
+.create-message-container .create-message-content .create-message input {   
+    width: 100%;
+    height: 2rem;
+    border: none;
+    border-bottom: 1px solid var(--border-standard);
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    margin-top: 1rem;
+}
+
+.create-message-container .create-message-content .create-message input:focus {
+    outline: none;
+}   
+
+.create-message-container .create-message-content .create-button-container {
+    width: 100%;
+    height: 5rem;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.create-message-container .create-message-content .create-button-container button {
+    height: 3rem;
+    width: 10rem;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--border-standard);
+    border-radius: 0.5rem;
+}
+
+.create-message-container .create-message-content .create-button-container button:hover {
+    transform: scale(1.05);
+    background-color: var(--background-hover);
+}
+
+.create-message-container .create-message-content .create-button-container h3 {
+    font-size: 1.5rem;
+    font-weight: 100;
+    color: var(--text-colour)
+}
+

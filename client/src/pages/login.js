@@ -25,7 +25,6 @@ function Login() {
 
         }).catch((err) => {
             //create an error message event
-            console.log(err.response.data);
             const { message } = err.response.data;
 
             if (message === "Please fill in all fields") {
