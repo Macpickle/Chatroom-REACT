@@ -21,9 +21,6 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
-app.use(express.json());
-app.use(errorHandler);
-
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';
 
 //connects mongoose to the mongoDB database
@@ -62,6 +59,7 @@ app.use(passport.session());
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(externalRouter);
+app.use(errorHandler);
 
 initpassport(
     passport,

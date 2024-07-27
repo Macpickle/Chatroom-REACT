@@ -72,7 +72,7 @@ router.post('/api/register', tryCatch(async (req, res) => {
 
 //login user
 router.post('/api/login', passport.authenticate('local', {
-    failureRedirect: '/api/login',
+    failureRedirect: '/',
     failureFlash: true,
 }), (req,res) => {
     res.status(200).json({
@@ -109,9 +109,20 @@ router.get('/api/messages', tryCatch(async (req, res) => {
     res.json({messages});
 }));
 
+router.get('/api/messages/:id', tryCatch(async (req, res) => {
+    const message = await Message.find({members: req.params.id});
+    console.log(message);
+    res.json(message);
+}));
+
 //create a new message
 router.post('/api/messages', tryCatch(async (req, res) => {
     const { members, message, sender, reciever } = req.body;
+
+    if (!reciever) {
+        throw new appError(FIELD_MISSING, 'Reciever is empty!', 401);
+    }
+
     if (!message) {
         throw new appError(FIELD_MISSING, 'Message is empty!', 401);
     }
@@ -124,6 +135,11 @@ router.post('/api/messages', tryCatch(async (req, res) => {
     
     if (!recieverExists) {
         throw new appError(INVALID_CREDENTIALS, 'User does not exist', 401);
+    }
+
+    const existingMessage = await Message.findOne({members: [sender, reciever]});
+    if (existingMessage) {
+        throw new appError(INVALID_CREDENTIALS, 'Message already exists', 401);
     }
     
     const messageArray = {
@@ -147,6 +163,12 @@ router.post('/api/messages', tryCatch(async (req, res) => {
 router.get('/api/users', tryCatch(async (req, res) => {
     const users = await User.find({}, {username: 1, photo: 1});
     res.json({users});
+}));
+
+//get current user information
+router.get('/api/users/:id', tryCatch(async(req,res) => {
+    const user = await User.findOne({username: req.params.id},{username: 1, photo: 1});
+    res.json({user})
 }));
 
 module.exports = router;

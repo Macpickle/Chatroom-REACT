@@ -4,8 +4,11 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import CreateMessage from "../pages/createMessage";
+import SearchUser from '../components/searchUser';
 
-export default function Sidenav({setMessageIdHandler}) {
+export default function Sidenav({setMessageIdHandler}) {    
+    const [users, setUsers] = useState([]);
+
     //handle sending message id to parent
     function handleClick(id) {
         setMessageIdHandler(id);
@@ -17,11 +20,7 @@ export default function Sidenav({setMessageIdHandler}) {
     const [newInput, setNewInput] = useState('');
 
     function getMessages() {
-        axios.get('http://localhost:3000/api/messages', {
-            params: {
-              username: localStorage.getItem('username')
-            }
-          })
+        axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'))
             .then(response => {
                 setMessages(response.data);
                 setLoading(false);
@@ -36,6 +35,18 @@ export default function Sidenav({setMessageIdHandler}) {
     useEffect(() => {
       getMessages()
     }, []);
+
+    useEffect(() => {
+        //fetch users
+        axios.get('http://localhost:3000/api/users')
+            .then(response => {
+                setUsers(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+
 
     //create new message
     function createMessage() {
@@ -61,22 +72,13 @@ export default function Sidenav({setMessageIdHandler}) {
                             </div>
                         </button>
                     </div>
-                    <div className="sidenav-search">
-                        <input
-                            type="text"
-                            placeholder="Find User..."
-                            value={newInput}
-                            onChange={(e) => {
-                                setNewInput(e.target.value);
-                            }}
-                        />
-                    </div>
+                    <SearchUser users={users} placeholder="Search for message..." />
                 </div>
                 {loading ? (
                     <div>Loading...</div>
                 ) : (
                     <div className="sidenav-list">
-                        {messages.messages.map((message, index) => (
+                        {messages.map((message, index) => (
                             <button className="sidenav-button" key={index} onClick={() => handleClick(message._id)}>
                                 <div className="sidenav-item">
                                     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />

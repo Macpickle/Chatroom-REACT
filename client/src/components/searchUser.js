@@ -3,19 +3,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AutoComplete from '../utils/autocomplete';
 
-function SearchUser() {
-    const [users, setUsers] = useState([]);
-
-    useEffect(() => {
-        //fetch users
-        axios.get('http://localhost:3000/api/users')
-            .then(response => {
-                setUsers(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }, []);
+function SearchUser({users, placeholder}) {
+    const resetColor = (e) => {
+        e.target.style.color = '';
+        e.target.style.borderBottom = '';
+        if (document.getElementById('search-results')) {
+            document.getElementById('search-results').innerHTML = '';
+        }
+    }
 
     return (
         <div className = "search-container">
@@ -23,13 +18,15 @@ function SearchUser() {
                 <input
                     id="search-input"
                     type="text"
-                    placeholder="Search for user..."
+                    placeholder={placeholder}
                     onChange={(e) => {
                         AutoComplete(e.target.value, users);
                     }}
+                    maxLength={75}
+                    onFocus={resetColor}
                 />
+                <div id="search-results"></div>
             </div>
-            <div id="search-results"></div>
         </div>
     )
 }

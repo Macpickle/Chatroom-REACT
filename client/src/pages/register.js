@@ -19,12 +19,14 @@ function Register() {
             email: email,
             password: password,
             confirmPassword: confirmPassword
-        }).then((res) => {
+        }
+        ).then((res) => {
             //on success, navigate to the login page
-            navigate('/login', { state: { username: res.data.username } });
+            navigate('/', { state: { username: res.data.username } });
         }).catch((err) => {
             //create an error message event
             const { message } = err.response.data;
+            console.log(err.response.data);
 
             if (message === "Please fill in all fields") {
                 document.querySelectorAll('.login-input input').forEach(element => {

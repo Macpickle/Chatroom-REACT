@@ -269,3 +269,9 @@
     color: var(--text-colour)
 }
 
+.create-message-container .create-message-content .error-message {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    color: red;
+}
