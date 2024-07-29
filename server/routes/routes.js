@@ -70,6 +70,13 @@ router.post('/api/register', tryCatch(async (req, res) => {
     });
 }));
 
+router.get('/api/login', tryCatch(async (req, res) => {
+    if (req.session.passport) {
+        const user = await User.findOne({ _id: req.session.passport.user }, { username: 1 });
+        return res.json({user});
+    }
+}));
+
 //login user
 router.post('/api/login', passport.authenticate('local', {
     failureRedirect: '/',

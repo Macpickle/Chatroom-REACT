@@ -1,0 +1,69 @@
+.account-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 91vh;
+}
+
+.account-container .account-box {
+    width: 50%;
+    height: 90%;
+    display: flex;
+    border: 1px solid var(--border-standard);
+    border-radius: 1rem;
+    flex-direction: column;
+}
+
+.account-container .account-box .account-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    flex-direction: column;
+}
+
+.account-container .account-box .account-content h2 {
+    font-weight: 100;
+    color: var(--text-colour);
+}
+
+.account-container .account-box .account-content .account-photo {
+    width: 6rem;
+    height: 6rem;
+    margin-bottom: 0.5rem;
+}
+
+.account-container .account-box .account-content .account-photo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--border-standard);
+}
+
+.account-container .account-box .account-content .account-options {
+    margin-top: 0.5rem;
+    width: 80%;
+    height: 10rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    padding: 1rem;
+    gap: 0.5rem;
+}
+
+.account-container .account-box .account-content .account-options button {
+    border: none;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--border-standard);
+    color: var(--text-colour);
+    font-size: 1rem;
+    font-weight: 100;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
+
+.account-container .account-box .account-content .account-options button:hover {
+    background-color: var(--background-hover);
+    transform: scale(1.05);
+}

@@ -39,7 +39,7 @@ const store = new MongoDBStore({
 // stores session data
 app.use(session({
     name: 'sid',
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     secret: process.env.SECRET_KEY,
     store: store,
@@ -54,11 +54,8 @@ app.use(session({
 app.use(flash());
 
 //initialize passport
-app.use(passport.initialize());
-app.use(passport.session());
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
-app.use(externalRouter);
 app.use(errorHandler);
 
 initpassport(
@@ -66,6 +63,12 @@ initpassport(
     async username => await User.findOne({ username: username }),
     async id => await User.findOne({ _id: id })
 );
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(externalRouter);
+
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

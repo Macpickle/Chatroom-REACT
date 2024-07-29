@@ -11,6 +11,16 @@ function Login() {
     const location = useLocation();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        axios.get('http://localhost:3000/api/login', {withCredentials: true}).then((res) => {
+            if (res.data.user) {
+                navigate('/home');
+            }
+        }).catch((err) => {
+            console.log(err);
+        })
+    }, [navigate]);
+
     const submitForm = (e) => {
         e.preventDefault();
         //make a fetch request to the server
