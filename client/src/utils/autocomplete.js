@@ -23,12 +23,12 @@ function AutoComplete(input, users) {
     
     var searchResults = document.getElementById('search-results');
     searchResults.innerHTML = '';
-    for (var i = 0; i < userArray.length; i++) {
+    for (var j = 0; j < userArray.length; j++) {
         var result = document.createElement('div');
         result.className = 'search-result';
         result.innerHTML = `
-            <img src=${userArray[i].photo} alt="Avatar" />
-            <h3>${boldSearchText(userArray[i].username, searchUser)}</h3>
+            <img src=${userArray[j].photo} alt="Avatar" />
+            <h3>${boldSearchText(userArray[j].username, searchUser)}</h3>
         `;
         searchResults.appendChild(result);
     }

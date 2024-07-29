@@ -111,7 +111,6 @@ router.get('/api/messages', tryCatch(async (req, res) => {
 
 router.get('/api/messages/:id', tryCatch(async (req, res) => {
     const message = await Message.find({members: req.params.id});
-    console.log(message);
     res.json(message);
 }));
 

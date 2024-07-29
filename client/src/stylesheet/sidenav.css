@@ -121,3 +121,22 @@
     font-weight: 300;
     color: var(--icon-colour);
 }
+
+.search-icon {
+    position: absolute;
+    top: 3.75rem;
+}
+
+.search-icon button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--icon-colour);
+    font-size: 1rem;
+}
+
+.search-icon button:hover {
+    transform: scale(1.1);
+}
+
+

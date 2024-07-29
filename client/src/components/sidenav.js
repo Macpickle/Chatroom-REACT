@@ -5,6 +5,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import CreateMessage from "../pages/createMessage";
 import SearchUser from '../components/searchUser';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 
 export default function Sidenav({setMessageIdHandler}) {    
     const [users, setUsers] = useState([]);
@@ -17,8 +19,8 @@ export default function Sidenav({setMessageIdHandler}) {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showCreateMessage, setShowCreateMessage] = useState(false);
-    const [newInput, setNewInput] = useState('');
 
+    //get messages that belongs to the user
     function getMessages() {
         axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'))
             .then(response => {
@@ -33,11 +35,12 @@ export default function Sidenav({setMessageIdHandler}) {
 
     //populate messages
     useEffect(() => {
-      getMessages()
+        getMessages()
     }, []);
 
     useEffect(() => {
         //fetch users
+        //need to fix, as it is sending all users (not just the ones in the message) to searchUser
         axios.get('http://localhost:3000/api/users')
             .then(response => {
                 setUsers(response.data);
@@ -47,6 +50,31 @@ export default function Sidenav({setMessageIdHandler}) {
             });
     }, []);
 
+    function findMessage(user, handler) {
+        messages.forEach(message => {
+            if (message.members.includes(user)) {
+                if (user !== localStorage.getItem('username')) {
+                    handler(message._id);
+                }
+            }
+        });
+    }
+
+    useEffect(() => {
+        document.getElementById('search-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                findMessage(e.target.value, handleClick);
+            }
+        });
+
+        document.getElementById('search-results').addEventListener('click', (e) => {
+            findMessage(e.target.innerText, handleClick);
+        });
+
+        document.getElementById('search-button').addEventListener('click', (e) => {
+            findMessage(document.getElementById('search-input').value, handleClick);
+        });
+    });
 
     //create new message
     function createMessage() {
@@ -72,10 +100,18 @@ export default function Sidenav({setMessageIdHandler}) {
                             </div>
                         </button>
                     </div>
-                    <SearchUser users={users} placeholder="Search for message..." />
+                    <SearchUser users={users} placeholder="Search for message..." padding={"1.5rem"}/>
+                    <div className = "search-icon">
+                        <div className = "tooltip">
+                            <button className = "search-button" id = "search-button">
+                                <FontAwesomeIcon icon={faMagnifyingGlass} />
+                            </button>
+                            <span className="tooltiptext">Search</span>
+                        </div>
+                    </div>
                 </div>
                 {loading ? (
-                    <div>Loading...</div>
+                    <div></div>
                 ) : (
                     <div className="sidenav-list">
                         {messages.map((message, index) => (

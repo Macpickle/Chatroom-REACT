@@ -36,32 +36,31 @@ export default function Navbar() {
     }, [])
 
     return (
-        <div className = "navbar-container">
+        <div className="navbar-container">
             <h2>Chatroom</h2>
-            { loading ? (
-                    <div></div>
-                ) : (
-                    <div>
-                        <div className = "navbar-profile">
-                            <img src = {user.user.photo} alt = "Avatar"/>
-                        </div>  
-                        <div className = "navbar-dropdown">
-                            <button className = "navbar-dropdown-option" >
-                                <h2>Account</h2>
-                            </button>
-                            <button className = "navbar-dropdown-option" >
-                                <h2>Settings</h2>
-                            </button>
-                            <button className = "navbar-dropdown-option" >
-                                <h2>Home</h2>
-                            </button>
-                            <button className = "navbar-dropdown-option" onClick={logoutUser}>
-                                <h2>Logout</h2>
-                            </button>
-                        </div>
+            {loading ? (
+                <div></div>
+            ) : (
+                <div>
+                    <div className="navbar-profile">
+                        <img src={user.user.photo} alt="Avatar" />
                     </div>
-                )
-            }
+                    <div className="navbar-dropdown">
+                        <button className="navbar-dropdown-option" onClick = {() => navigate('/account')}>
+                            <h2>Account</h2>
+                        </button>
+                        <button className="navbar-dropdown-option" onClick = {() => navigate('/settings')}>
+                            <h2>Settings</h2>
+                        </button>
+                        <button className="navbar-dropdown-option" onClick = {() => navigate('/home')}>
+                            <h2>Home</h2>
+                        </button>
+                        <button className="navbar-dropdown-option" onClick={logoutUser}>
+                            <h2>Logout</h2>
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

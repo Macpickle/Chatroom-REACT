@@ -84,7 +84,7 @@ function CreateMessage({closeMessage, getMessages}) {
                 <div className = "error-message">
                     <p id="error-content"></p>
                 </div>
-                <SearchUser users={users} placeholder="Search for a user..."/>
+                <SearchUser users={users} placeholder="Search for a user..." padding = {null}/>
                 <div className = "create-message">
                     <input
                         type="text"

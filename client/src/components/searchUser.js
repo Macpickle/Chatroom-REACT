@@ -1,17 +1,18 @@
 import '../stylesheet/search.css';
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 import AutoComplete from '../utils/autocomplete';
 
-function SearchUser({users, placeholder}) {
+function SearchUser({users, placeholder, padding}) {
     const resetColor = (e) => {
         e.target.style.color = '';
         e.target.style.borderBottom = '';
-        if (document.getElementById('search-results')) {
-            document.getElementById('search-results').innerHTML = '';
-        }
     }
 
+    useEffect(() => {
+        //remove search results when component has no users
+        document.getElementById('search-results').style.display = 'none';
+    });
+    
     return (
         <div className = "search-container">
             <div className = "search-content">
@@ -24,6 +25,7 @@ function SearchUser({users, placeholder}) {
                     }}
                     maxLength={75}
                     onFocus={resetColor}
+                    style={{paddingLeft: padding}}
                 />
                 <div id="search-results"></div>
             </div>
