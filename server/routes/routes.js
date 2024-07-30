@@ -71,9 +71,14 @@ router.post('/api/register', tryCatch(async (req, res) => {
 }));
 
 router.get('/api/login', tryCatch(async (req, res) => {
-    if (req.session.passport) {
-        const user = await User.findOne({ _id: req.session.passport.user }, { username: 1 });
+    if (req.user) {
+        const user = await User.findOne({ username: req.user.username }, { username: 1 });
         return res.json({user});
+    } else {
+        return res.status(401).json({
+            status: 'error',
+            message: 'User not logged in',
+        });
     }
 }));
 
@@ -91,12 +96,10 @@ router.post('/api/login', passport.authenticate('local', {
 
 //logout user
 router.get('/api/logout', (req, res) => {
+    req.session.destroy();
     req.logout();
     res.clearCookie('sid');
-    res.status(200).json({
-        status: 'ok',
-        message: 'User logged out',
-    });
+    res.json({message: 'Logged out successfully'});
 });
 
 //handle messaging

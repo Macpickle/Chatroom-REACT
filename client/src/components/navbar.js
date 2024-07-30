@@ -9,19 +9,12 @@ export default function Navbar() {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    const removeSession = () => {
-        fetch('/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-    };
 
     const logoutUser = () => {
         localStorage.clear();
-        removeSession();
-        window.location.href = '/';
+        axios.get('http://localhost:3000/api/logout').then(() => {
+            navigate('/');
+        });
     }
 
     useEffect(() => {
