@@ -18,7 +18,13 @@ const userSchema = new mongoose.Schema({
         default: "https://www.w3schools.com/howto/img_avatar.png",
         required: [true, 'Photo is required']
     },
-
+    settings: {
+        type: Object,
+        default: {
+            "theme": "system",
+            "language": "english"
+        },
+    }
 });
 
 module.exports = mongoose.model('User', userSchema);

@@ -180,4 +180,95 @@ router.get('/api/users/:id', tryCatch(async(req,res) => {
     res.json({user})
 }));
 
+//updates setting object of a user
+function updateSetting(settingType, settingValue, username) {
+    const update = { $set: {} };
+    update.$set[`settings.${settingType}`] = settingValue;
+
+    if (!settingValue || settingValue == null) {
+        throw new appError(INVALID_CREDENTIALS, "Setting cannot be empty!", 400);
+    }   
+
+    User.findOneAndUpdate({username: username}, update, { new: true })
+        .then(doc => {
+            return;
+        })
+        .catch(err => {
+            //unexpected error
+            throw new appError(INTERNAL_SERVER_ERROR, "Error updating settings!", 500);
+        });
+}
+
+//update settings
+router.post('/api/settings', tryCatch(async (req, res) => {
+    const {
+        username,
+        newPassword,
+        oldPassword,
+        email,
+        theme,
+        language,
+    } = req.body.formData;
+
+    const currentUser = req.body.username;
+    const user = await User.findOne({ username: currentUser });
+
+    if (username) {
+        //check if username is available
+        const userExists = await User.findOne({username: username}, {username: 1})
+        if (userExists) {
+            //send error to user
+            throw new appError(INVALID_CREDENTIALS, "Username is already taken!", 401);
+        }
+
+        user.username = username
+    }
+
+    if (newPassword) {
+        if (!oldPassword) {
+            //send error to user
+            throw new appError(INVALID_CREDENTIALS, "Old password is required!", 401);
+        }
+
+        const samePassword = await bcrypt.compare(oldPassword, user.password)
+
+        if (!samePassword) {
+            //send error to user
+            throw new appError(INVALID_CREDENTIALS, "Incorrect Password", 401);
+        }
+
+        user.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    if (email) {
+        const userExists = await User.findOne({email: email}, {email: 1});
+
+        if (userExists) {
+            //send error to user
+            throw new appError(INVALID_CREDENTIALS, "Email is already in use!", 401);
+        }
+
+        //check if email is following proper requirements
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            throw new appError(INVALID_LOGIN_CREDENTIALS, 'Invalid email format', 401);
+        }
+
+        user.email = email
+    }
+
+    if (theme) {
+        //this is a dropdown menu, forced to have a value associated with it, therefore, no use to check if values are inputted properly
+        updateSetting("theme", theme, currentUser);
+    }
+
+    if (language) {
+        //this is a dropdown menu, forced to have a value associated with it, therefore, no use to check if values are inputted properly
+        updateSetting("language", language, currentUser);
+    }
+    
+    user.save();
+    res.json({message: 'Settings updated successfully', status: 'ok'});
+}));
+
 module.exports = router;

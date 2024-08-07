@@ -11,3 +11,19 @@
     --text-colour-tertiary: #7d7d7d;
     --text-colour-title: #e6e6e6;
 }
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #1e1e1e;
+        --background-secondary: #2c2c2c;
+        --background-tertiary: #3a3a3a;
+        --background-hover: #4a4a4a;
+        --background-hover-secondary: #5a5a5a;
+        --border-standard: #6a6a6a;
+        --icon-colour: #d1d1d1;
+        --text-colour: #d1d1d1;
+        --text-colour-secondary: #b1b1b1;
+        --text-colour-tertiary: #b1b1b1;
+        --text-colour-title: #f1f1f1;
+    }
+}

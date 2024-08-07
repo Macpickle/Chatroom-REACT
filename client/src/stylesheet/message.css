@@ -85,6 +85,7 @@
     justify-content: space-between;
     align-items: center;
     justify-content: center;
+    margin-top: auto;
     padding: 1rem;
     padding-top: 0;
 }
@@ -274,4 +275,18 @@
     display: flex;
     justify-content: center;
     color: red;
+}
+
+.no-message-information-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-message-information-container .no-message-information {
+    font-size: 0.75rem;
+    font-weight: 100;
+    color: var(--text-colour-secondary);
 }

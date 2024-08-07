@@ -33,7 +33,7 @@ export default function MessageBox(message) {
     return (
         <div className="message-container">
             <div className="message-content">
-            {messages.length != 0 ? (
+            {messages.length !== 0 ? (
                 messages.messages.messages.map((message, index) => (
                     <div className="message" key={index}>
                         <div className="profile-pic">
@@ -54,10 +54,14 @@ export default function MessageBox(message) {
                     </div>
                 ))
             ) : (
-                <div></div>
+                <div className = "no-message-information-container">
+                    <div className = "no-message-information">
+                        <h1>Click on a person on the sidebar to open a message!</h1>
+                    </div>
+                </div>
             )}
-            </div>
-
+            
+            { messages.length !== 0 ? (
             <div className="message-footer">
                 <input type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
                 <button className="send-button">
@@ -73,6 +77,12 @@ export default function MessageBox(message) {
                     </div>
                 </button>
             </div>
+            ) : (
+                <div></div>
+            )}
+            
+            </div>
+ 
         </div>
     );
 }
