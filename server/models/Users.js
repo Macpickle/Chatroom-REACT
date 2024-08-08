@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
             "theme": "system",
             "language": "english"
         },
+    },
+    blocked: {
+        type: Array,
+        default: []
     }
 });
 

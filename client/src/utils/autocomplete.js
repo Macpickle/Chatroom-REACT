@@ -5,15 +5,6 @@ function AutoComplete(input, users) {
         document.getElementById('search-results').style.display = 'none';
     }
     var searchUser = input.toLowerCase();
-    var userArray = [];
-
-    if (users) {
-        for (var i = 0; i < users.users.length; i++) {
-            if (users.users[i].username && users.users[i].username.toLowerCase().includes(searchUser)) {
-                userArray.push(users.users[i]);
-            }
-        }
-    }
 
     //bold search text if found
     function boldSearchText(username, searchUser) {
@@ -23,12 +14,15 @@ function AutoComplete(input, users) {
     
     var searchResults = document.getElementById('search-results');
     searchResults.innerHTML = '';
-    for (var j = 0; j < userArray.length; j++) {
+    for (var j = 0; j < users.length; j++) {
+        if (users[j].members[0].username.toLowerCase().indexOf(searchUser) === -1) {
+            continue;
+        }
         var result = document.createElement('div');
         result.className = 'search-result';
         result.innerHTML = `
-            <img src=${userArray[j].photo} alt="Avatar" />
-            <h3>${boldSearchText(userArray[j].username, searchUser)}</h3>
+            <img src=${users[j].members[0].photo} alt="Avatar" />
+            <h3>${boldSearchText(users[j].members[0].username, searchUser)}</h3>
         `;
         searchResults.appendChild(result);
     }

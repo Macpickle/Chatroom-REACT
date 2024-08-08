@@ -46,6 +46,13 @@
     border: none;
     background-color: transparent;
     border-bottom: 1px solid var(--border-standard);
+    color: var(--text-colour);
+}
+
+@media (prefers-color-scheme: dark) {
+    ::-ms-reveal {
+        filter: invert(1) hue-rotate(180deg);
+    }
 }
 
 .login-container .login .login-input input:focus {

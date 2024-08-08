@@ -41,9 +41,10 @@ export default function Sidenav({setMessageIdHandler}) {
     useEffect(() => {
         //fetch users
         //need to fix, as it is sending all users (not just the ones in the message) to searchUser
-        axios.get('http://localhost:3000/api/users')
+        axios.get('http://localhost:3000/api/messageUsers/' + localStorage.getItem('username'))
             .then(response => {
-                setUsers(response.data);
+                const users = response.data;
+                setUsers(users);
             })
             .catch(error => {
                 console.error(error);

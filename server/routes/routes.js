@@ -124,6 +124,35 @@ router.get('/api/messages/:id', tryCatch(async (req, res) => {
     res.json(message);
 }));
 
+router.get('/api/messageUsers/:id', tryCatch(async (req, res) => {
+    const message = await Message.find({members: req.params.id}, {members: 1});  
+    var memberArray = [];
+
+    message.forEach(element => {
+        //remove if user is the same as the current user
+        element.members.forEach((member, index) => {
+            if (member === req.params.id) {
+                element.members.splice(index, 1);
+            }
+        });      
+    });
+
+    //get the members photos
+    for (var i = 0; i < message.length; i++) {
+        for (var j = 0; j < message[i].members.length; j++) {
+            const user = await User.findOne({username: message[i].members[j]}, {photo: 1, username: 1});
+            memberArray.push(user);
+        }
+    }
+
+    //add the photos to the message object
+    message.forEach((element, index) => {
+        element.members = memberArray[index];
+    });
+
+    res.json(message);
+}));
+
 //create a new message
 router.post('/api/messages', tryCatch(async (req, res) => {
     const { members, message, sender, reciever } = req.body;
@@ -271,4 +300,14 @@ router.post('/api/settings', tryCatch(async (req, res) => {
     res.json({message: 'Settings updated successfully', status: 'ok'});
 }));
 
+router.get("/api/theme/:id", tryCatch(async (req, res) => {
+    const user = await User.findOne({username: req.params.id}, {settings: 1});
+    const theme = user.settings.theme;
+    res.json({theme});
+}));
+
+router.get("/api/profilepicture/:id",tryCatch(async (req, res) => {
+    const userPhoto = await User.findOne({username: req.params.id}, {photo: 1});
+    res.json(userPhoto);
+}));
 module.exports = router;

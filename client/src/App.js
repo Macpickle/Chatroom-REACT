@@ -7,9 +7,12 @@ import Settings from './pages/settings';
 import { Route, Routes } from 'react-router-dom';
 import RequiredAuth from './utils/requiredAuth';
 import React from 'react';
+import theme from './themeSetter';
 
 
 function App() {
+    //set theme on app load
+    theme();
     return (
         <Routes>
             <Route element={<RequiredAuth/> }>

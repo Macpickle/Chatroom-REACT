@@ -44,6 +44,7 @@
     width: 100%;
     display: flex;
     align-items: center;
+    color: var(--text-colour);
 }
 
 .message-container .message-content .message .message-header .profile-name {
@@ -93,6 +94,7 @@
 .message-container .message-footer h2 {
     font-size: 1.5rem;
     font-weight: 100;
+    color: var(--text-colour);
 }
 
 
@@ -102,6 +104,8 @@
     border: 1px solid var(--border-standard);
     border-radius: 1rem;
     padding: 0 1rem;
+    color: var(--text-colour);
+    background-color: var(--background);
 }
 
 .message-container .message-footer input:focus {
@@ -196,6 +200,7 @@
     width: 40rem;
     height: 30rem;
     background-color: var(--background);
+    border: 1px solid var(--border-standard);
     border-radius: 1rem;
     display: flex;
     flex-direction: column;
@@ -214,6 +219,7 @@
     border-radius: 50%;
     background-color: var(--background);
     border: none;
+    color: var(--icon-colour);
 }
 
 .create-message-container .create-message-content .back-button:hover {
@@ -224,6 +230,7 @@
     font-size: 1.5rem;
     font-weight: 100;
     margin-top: 0.5rem;
+    color: var(--text-colour);
 }
 
 .create-message-container .create-message-content .create-message input {   
@@ -236,6 +243,10 @@
     align-items: center;
     padding: 0 0.5rem;
     margin-top: 1rem;
+}
+
+.create-message-container .create-message-content input {
+    color: var(--text-colour);
 }
 
 .create-message-container .create-message-content .create-message input:focus {

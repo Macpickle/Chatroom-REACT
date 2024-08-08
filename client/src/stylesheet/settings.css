@@ -77,6 +77,7 @@
     border: none;
     border-bottom: 1px solid var(--border-standard);
     background-color: transparent;
+    color: var(--text-colour);
 }
 
 .setting-container .setting-box .setting-content .setting-item input:focus {
@@ -95,6 +96,7 @@
     background-color: var(--background-secondary);
     padding: 0.25rem;
     border-radius: 0.5rem;
+    color: var(--text-colour);
 }
 
 .setting-container .setting-box .setting-content .setting-item button:hover {
@@ -104,6 +106,8 @@
 .setting-container .setting-box .setting-content .setting-item select {
     padding: 0.25rem;
     border: 1px solid var(--border-standard);
+    background-color: var(--background-secondary);
+    color: var(--text-colour);
 }
 
 .setting-container .setting-box .setting-content .setting-item select:focus {
@@ -123,6 +127,7 @@
     background-color: var(--background-secondary);
     padding: 0.25rem;
     border-radius: 0.5rem;
+    color: var(--text-colour);
 }
 
 .setting-container .setting-box .setting-footer button:hover {
