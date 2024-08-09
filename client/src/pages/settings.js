@@ -13,6 +13,7 @@ function Settings() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('');
   const [subscreen, setSubscreen] = useState(false);
+  const [error, setError] = useState(''); //for error messaging
   const [title, setTitle] = useState(''); //for subscreen title element
   const [method, setMethod] = useState(''); //for subscreen, responsible on changing subscreen based on what method is used
 
@@ -34,6 +35,11 @@ function Settings() {
       ...prevState,
       [name]: value
     }));
+
+    //reset colouring if error message is present
+    event.target.style.borderBottom = "";
+    event.target.style.color = "";
+    setError('');
   }
 
   function submitForm(event) {
@@ -48,7 +54,33 @@ function Settings() {
       theme();
 
     }).catch(error => {
-      const { message } = error.response.data;
+      const {message} = error.response.data;
+      setError(message);
+
+      if (message == "Username is already taken!"){
+        document.getElementById("username").style.borderBottom = "2px solid red";
+        document.getElementById("username").style.color = "red";
+      }
+
+      else if (message == "Old password is required!"){
+        document.getElementById("oldPassword").style.borderBottom = "2px solid red";
+        document.getElementById("oldPassword").style.color = "red";
+      }
+
+      else if (message == "New password is required!"){
+        document.getElementById("newPassword").style.borderBottom = "2px solid red";
+        document.getElementById("newPassword").style.color = "red";
+      }
+
+      else if (message == "Incorrect Password"){
+        document.getElementById("oldPassword").style.borderBottom = "2px solid red";
+        document.getElementById("oldPassword").style.color = "red";
+      }
+
+      else if (message == "Email is already in use!"){
+        document.getElementById("email").style.borderBottom = "2px solid red";
+        document.getElementById("email").style.color = "red";
+      }
     });
   }
 
@@ -58,7 +90,7 @@ function Settings() {
         setStatus('');
       }, 5000);
     }
-  });
+  }, [status]);
 
   function showSubscreen(val) {
     setSubscreen(true);
@@ -108,21 +140,24 @@ function Settings() {
               <div className="setting-title">
                 <h2>Settings</h2>
               </div>
+              <div className = "error">
+                <p className = "error-message"> {error}</p>
+              </div>
               <div className="setting-content">
                 <div className="setting-item">
                   <h3>Change Name</h3>
-                  <input type="text" name="username" placeholder='New Username...' maxLength={30} onChange={handleChange}></input>
+                  <input type="text" name="username" placeholder='New Username...' maxLength={30} onChange={handleChange} id ="username"></input>
                 </div>
                 <div className="setting-item">
                   <h3>Change Password</h3>
                   <div className="setting-inline">
-                    <input type="password" name="newPassword" placeholder='New Password...' maxLength={20} onChange={handleChange}></input>
-                    <input type="password" name="oldPassword" placeholder='Old Password...' maxLength={20} onChange={handleChange}></input>
+                    <input type="password" name="newPassword" placeholder='New Password...' maxLength={20} onChange={handleChange} id = "newPassword"></input>
+                    <input type="password" name="oldPassword" placeholder='Old Password...' maxLength={20} onChange={handleChange} id = "oldPassword"></input>
                   </div>
                 </div>
                 <div className="setting-item">
                   <h3>Change Email</h3>
-                  <input type="text" name="email" placeholder='New Email...' maxLength={30} onChange={handleChange}></input>
+                  <input type="text" name="email" placeholder='New Email...' maxLength={30} onChange={handleChange} id = "email"></input>
                 </div>
                 <div className="setting-item">
                   <h3>Change Profile Picture</h3>

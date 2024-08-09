@@ -42,7 +42,6 @@
 .setting-container .setting-box .setting-content { 
     width: 100%;
     height: 100%;
-    margin-top: 2.5rem;
     padding: 1rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -72,6 +71,11 @@
     flex-direction: row;
     gap: 0.5rem;
 }
+
+.setting-container .setting-box .setting-content .setting-item .setting-inline input {
+    width: 50%;
+}
+
 
 .setting-container .setting-box .setting-content .setting-item input {
     border: none;
@@ -132,4 +136,19 @@
 
 .setting-container .setting-box .setting-footer button:hover {
     background-color: var(--background-hover);
+}
+
+.error {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    color: red;
+}
+
+@media screen and (max-width: 900px) {
+    .setting-container .setting-box {
+        width: 95%;
+    }
 }

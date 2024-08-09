@@ -31,7 +31,7 @@ function Subscreen({closeSubscreen, title, method}) {
             {method === "Photo" ? (
             <div className = "subscreen-photo-container">
                 <div className = "subscreen-photo">
-                    <img src={photo} alt="picture"/>
+                    <img src={photo} alt = "profile"/>
                 </div>
                 <input type = "file" id = "file-input"/>
                 <label for="file-input">Select file</label>

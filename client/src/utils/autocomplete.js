@@ -1,4 +1,14 @@
 function AutoComplete(input, users) {
+    var usersFormatted = [];
+
+    if (users[0].members) {
+        for (let i = 0; i < users.length; i++ ) {
+            usersFormatted.push(users[i].members[0]);
+        }
+    } else {
+        usersFormatted = users
+    }
+
     if (input && input !== '') {
         document.getElementById('search-results').style.display = 'flex';
     } else {
@@ -14,15 +24,15 @@ function AutoComplete(input, users) {
     
     var searchResults = document.getElementById('search-results');
     searchResults.innerHTML = '';
-    for (var j = 0; j < users.length; j++) {
-        if (users[j].members[0].username.toLowerCase().indexOf(searchUser) === -1) {
+    for (var j = 0; j < usersFormatted.length; j++) {
+        if (usersFormatted[j].username.toLowerCase().indexOf(searchUser) === -1) {
             continue;
         }
         var result = document.createElement('div');
         result.className = 'search-result';
         result.innerHTML = `
-            <img src=${users[j].members[0].photo} alt="Avatar" />
-            <h3>${boldSearchText(users[j].members[0].username, searchUser)}</h3>
+            <img src=${usersFormatted[j].photo} alt="Avatar" />
+            <h3>${boldSearchText(usersFormatted[j].username, searchUser)}</h3>
         `;
         searchResults.appendChild(result);
     }

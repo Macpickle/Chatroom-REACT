@@ -200,7 +200,7 @@ router.post('/api/messages', tryCatch(async (req, res) => {
 //get all users, usernames and photos
 router.get('/api/users', tryCatch(async (req, res) => {
     const users = await User.find({}, {username: 1, photo: 1});
-    res.json({users});
+    res.json(users);
 }));
 
 //get current user information
@@ -267,6 +267,11 @@ router.post('/api/settings', tryCatch(async (req, res) => {
         }
 
         user.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    if (oldPassword && !newPassword) {
+        //send error to user
+        throw new appError(INVALID_CREDENTIALS, "New password is required!", 401);
     }
 
     if (email) {
