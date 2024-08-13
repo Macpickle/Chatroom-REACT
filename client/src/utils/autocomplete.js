@@ -34,6 +34,7 @@ function AutoComplete(input, users) {
             <img src=${usersFormatted[j].photo} alt="Avatar" />
             <h3>${boldSearchText(usersFormatted[j].username, searchUser)}</h3>
         `;
+        result.value = usersFormatted[j].username;
         searchResults.appendChild(result);
     }
 

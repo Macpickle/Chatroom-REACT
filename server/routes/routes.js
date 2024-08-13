@@ -7,6 +7,7 @@ const {USER_ALREADY_EXISTS,
       FIELD_MISSING,
       INVALID_CREDENTIALS,
       CHAT_NOT_FOUND,
+      USER_NOT_FOUND,
       } = require('../constants/constants');
 
 const { tryCatch } = require('../utils/tryCatch');
@@ -315,4 +316,62 @@ router.get("/api/profilepicture/:id",tryCatch(async (req, res) => {
     const userPhoto = await User.findOne({username: req.params.id}, {photo: 1});
     res.json(userPhoto);
 }));
+
+router.get("/api/blocked/:id", tryCatch(async (req, res) => {
+    const user = await User.findOne({username: req.params.id}, {blocked: 1});
+    res.json(user);
+}));
+
+router.post("/api/block", tryCatch(async (req, res) => {
+    const {blockUser, currentUser} = req.body;
+
+    if (!blockUser || !currentUser) {
+        throw new appError(FIELD_MISSING, "Fields must be filled!", 401);
+    }
+
+    if (blockUser === currentUser) {
+        throw new appError(INVALID_CREDENTIALS, "Cannot block self!", 401);
+    }
+
+    const blockedAccount = await User.findOne({username: blockUser}, {username: 1, photo: 1})
+    const currentAccount = await User.findOne({username: currentUser}, {username: 1, photo: 1, blocked: 1})
+    if (!blockedAccount || !currentAccount) {
+        throw new appError(USER_NOT_FOUND, "User not found!", 401);
+    }
+
+    //checks if user is already blocked
+    const isBlocked = currentAccount.blocked.some(user => user.username === blockUser);
+    if (isBlocked) {
+       currentAccount.blocked = currentAccount.blocked.filter(user => user.username !== blockUser);
+    } else {
+        currentAccount.blocked.push({ username: blockUser, photo: blockedAccount.photo });
+    }
+
+    currentAccount.save();
+    res.json({message: "User blocked successfully", status: "ok", blocked: currentAccount.blocked});
+}));
+
+router.post('/api/profilepicture', tryCatch(async (req, res) => {
+    const { username, photo } = req.body;
+    const user = await User.findOne({username: username});
+    
+    fetch('https://api.imgur.com/3/image', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            image: photo,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+    })
+    
+    user.save();
+    res.json({message: 'Photo uploaded successfully', status: 'ok'});
+}));
+
 module.exports = router;

@@ -57,27 +57,27 @@ function Settings() {
       const {message} = error.response.data;
       setError(message);
 
-      if (message == "Username is already taken!"){
+      if (message === "Username is already taken!"){
         document.getElementById("username").style.borderBottom = "2px solid red";
         document.getElementById("username").style.color = "red";
       }
 
-      else if (message == "Old password is required!"){
+      else if (message === "Old password is required!"){
         document.getElementById("oldPassword").style.borderBottom = "2px solid red";
         document.getElementById("oldPassword").style.color = "red";
       }
 
-      else if (message == "New password is required!"){
+      else if (message === "New password is required!"){
         document.getElementById("newPassword").style.borderBottom = "2px solid red";
         document.getElementById("newPassword").style.color = "red";
       }
 
-      else if (message == "Incorrect Password"){
+      else if (message === "Incorrect Password"){
         document.getElementById("oldPassword").style.borderBottom = "2px solid red";
         document.getElementById("oldPassword").style.color = "red";
       }
 
-      else if (message == "Email is already in use!"){
+      else if (message === "Email is already in use!"){
         document.getElementById("email").style.borderBottom = "2px solid red";
         document.getElementById("email").style.color = "red";
       }
@@ -94,11 +94,11 @@ function Settings() {
 
   function showSubscreen(val) {
     setSubscreen(true);
-    if (val == "Blocked"){
+    if (val === "Blocked"){
       setTitle("Viewing Blocked...");
       setMethod(val);
     }
-    else if (val == "Photo"){
+    else if (val === "Photo"){
       setTitle("Updating Profile Picture...");
       setMethod(val);
     } else {
@@ -131,7 +131,7 @@ function Settings() {
             <div className="setting-box">
               <div className="setting-header">
                 <div className="tooltip">
-                  <button className="setting-button" onClick={() => navigate("/account")}>
+                  <button className="setting-button" onClick={() => navigate("/account")} type="button">
                     <FontAwesomeIcon icon={faArrowLeft}/>
                   </button>
                   <span className="tooltiptext">Back</span>
