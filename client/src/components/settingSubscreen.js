@@ -108,17 +108,42 @@ function Subscreen({closeSubscreen, title, method}) {
         setError('');
     }
 
-    const loadFile = () => {
+    const loadFile = async () => {
+        //test later think i did it but imgur limit
         const file = document.getElementById('file-input').files[0];
-        setphoto(URL.createObjectURL(file));
 
-        axios.post('http://localhost:3000/api/profilepicture', {
-            photo: URL.createObjectURL(file),
-            username: localStorage.getItem('username')
-        }).then(response => {
-            console.log(response);
-        }).then(error => {
+        const reader = new FormData();
+        reader.append('file', file);
+
+        axios.post('https://api.imgur.com/3/image', {
+            method: 'POST',
+            headers: {
+                'Authorization': "Client-ID " + process.env.IMGUR_CLIENT_ID,
+            },
+            body: reader
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        }).catch(error => {
             console.error(error);
+        });
+    }
+
+    const deleteUser = () => {
+        console.log(document.getElementById('confirm').value);
+        axios.post('http://localhost:3000/api/delete', {
+            username: localStorage.getItem('username'),
+            password: document.getElementById('confirm').value
+        }).then(response => {
+            localStorage.clear();
+            window.location.reload();
+        }).catch(error => {
+            const { message } = error.response.data;
+            setError(message);
+
+            document.getElementById('confirm').style.borderBottom = '1px solid red';
+            document.getElementById('confirm').placeholder = 'Password required';
         });
     }
 
@@ -173,6 +198,22 @@ function Subscreen({closeSubscreen, title, method}) {
             ) : (
                 <div></div>
             )}
+
+            {method === "Delete" ? (
+                <div className = "subscreen-delete-container">
+                    <div className = "subscreen-delete">
+                        <h3>Are you sure you want to delete your account?</h3>
+                        
+                        <div className = "subscreen-confirm">
+                            <input id = "confirm" type = "text" placeholder = "Confirm with your password..." onChange={resetColour}/>
+                            <button className = "confirm-button" onClick = {deleteUser}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div></div>
+            )}
+            
             
         </div>
     </div>

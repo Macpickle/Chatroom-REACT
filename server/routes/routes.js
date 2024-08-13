@@ -240,6 +240,10 @@ router.post('/api/settings', tryCatch(async (req, res) => {
         language,
     } = req.body.formData;
 
+    if (!username && !newPassword && !oldPassword && !email && !theme && !language) {
+        throw new appError(FIELD_MISSING, "Fields must be filled!", 401);
+    }
+
     const currentUser = req.body.username;
     const user = await User.findOne({ username: currentUser });
 
@@ -351,27 +355,25 @@ router.post("/api/block", tryCatch(async (req, res) => {
     res.json({message: "User blocked successfully", status: "ok", blocked: currentAccount.blocked});
 }));
 
-router.post('/api/profilepicture', tryCatch(async (req, res) => {
-    const { username, photo } = req.body;
+router.post('/api/delete', tryCatch(async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        throw new appError(FIELD_MISSING, "Fields must be filled!", 401);
+    }
+
     const user = await User.findOne({username: username});
-    
-    fetch('https://api.imgur.com/3/image', {
-        method: 'POST',
-        headers: {
-            'Authorization': `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            image: photo,
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-    })
-    
-    user.save();
-    res.json({message: 'Photo uploaded successfully', status: 'ok'});
+    if (!user) {
+        throw new appError(USER_NOT_FOUND, "User not found!", 401);
+    }
+
+    const samePassword = await bcrypt.compare(password, user.password)
+    if (!samePassword) {
+        throw new appError(INVALID_CREDENTIALS, "Incorrect Password", 401);
+    }
+
+    await User.deleteOne({username: username});
+    res.json({message: "User deleted successfully", status: "ok"});
 }));
 
 module.exports = router;

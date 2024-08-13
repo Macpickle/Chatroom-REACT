@@ -152,3 +152,51 @@
     color: var(--text-colour);
     font-weight: 100;
 }
+
+.subscreen-delete-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.subscreen-delete-container h3 {
+    font-size: 1rem;
+    color: var(--text-colour);
+    font-weight: 100;
+    margin-top: 1rem;
+}
+
+.subscreen-delete-container .subscreen-confirm {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 2rem;
+    gap: 1.5rem;
+}
+
+.subscreen-delete-container .subscreen-confirm button {
+    width: 100%;
+    height: 3rem;
+    background-color: var(--background-secondary);
+    border: none;
+    color: var(--text-colour);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.subscreen-delete-container .subscreen-confirm button:hover {
+    background-color: var(--background-hover);
+}
+
+.subscreen-delete-container .subscreen-confirm input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-standard);
+    color: var(--text-colour);
+}
+
+.subscreen-delete-container .subscreen-confirm input:focus {
+    outline: none;
+}

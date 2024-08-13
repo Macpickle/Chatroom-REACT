@@ -101,8 +101,11 @@ function Settings() {
     else if (val === "Photo"){
       setTitle("Updating Profile Picture...");
       setMethod(val);
+    } else if (val === "Delete"){
+      setTitle("Deleting Account...");
+      setMethod(val);
     } else {
-      //unexpected error, add error messaging
+      //unknown method
     }
   }
 
@@ -187,7 +190,7 @@ function Settings() {
                 </div>
                 <div className="setting-item">
                   <h3>Delete Account</h3>
-                  <button className="button">Delete Account</button>
+                  <button className="button" type = "button" onClick = {() => showSubscreen("Delete")} >Delete Account</button>
                 </div>
               </div>
               <div className="setting-footer">

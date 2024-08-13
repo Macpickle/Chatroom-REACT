@@ -36,8 +36,6 @@ function Account() {
                 <div className = "account-options">
                   <button onClick = {() => navigate("/settings")}>Settings</button>
                   <button onClick = {() => navigate("/home")}>Home</button>
-                  <button>????</button>
-                  <button>View Blocked</button>
                 </div>
               </div>
             </div>
