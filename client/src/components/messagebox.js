@@ -3,13 +3,26 @@ import "../stylesheet/style.css";
 import EditMessageBox from "./editMesagebox";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import socketIOClient from "socket.io-client";
 
-//socket.io
 export default function MessageBox(message) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [parrentID, setParentID] = useState('');
+    let socket = socketIOClient('http://localhost:3000');
     
+    useEffect(() => {
+        socket.on('message', (data) => {
+            if (messages.messages) {
+                const messagesCopy = [...messages.messages.messages];
+                messagesCopy.push(data);
+                setMessages({messages: {messages: messagesCopy}});
+                setInput(''); //sets all users to '', fix
+            }
+
+        });
+    }, [messages]);
+
     //populate messages
     useEffect(() => {
         if (message.messageID !== '') {
@@ -28,6 +41,21 @@ export default function MessageBox(message) {
                 });
         }
     }, [message]);
+
+    const submitMessage = () => {
+        axios.post(`http://localhost:3000/api/message`, {
+            members: [localStorage.getItem('username'), localStorage.getItem('otherUser')],
+            message: input,
+            sender: localStorage.getItem('username'),
+            reciever: localStorage.getItem('otherUser'),
+        })
+
+        socket.emit('message', {
+            message: input,
+            sender: localStorage.getItem('username'),
+            time: new Date().toLocaleTimeString(),
+        });
+    };
 
 
     return (
@@ -64,7 +92,7 @@ export default function MessageBox(message) {
             { messages.length !== 0 ? (
             <div className="message-footer">
                 <input type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
-                <button className="send-button">
+                <button className="send-button" onClick = {() => submitMessage()}>
                     <div className="tooltip">
                         <h2>Send</h2>
                         <span className="tooltiptext">Send Message</span>

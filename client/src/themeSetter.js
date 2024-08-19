@@ -7,8 +7,8 @@ const theme = () => {
         .then(response => {
             const {theme} = response.data;
 
+            var root = document.documentElement;
             if (theme === "light") {
-                var root = document.documentElement;
                 root.style.setProperty('--background', '#f9f9f9');
                 root.style.setProperty('--background-secondary', '#efefef');
                 root.style.setProperty('--background-tertiary', '#dedede');
@@ -23,7 +23,6 @@ const theme = () => {
             }
         
             else if (theme === "dark") {
-                var root = document.documentElement;
                 root.style.setProperty('--background', '#1e1e1e');
                 root.style.setProperty('--background-secondary', '#2c2c2c');
                 root.style.setProperty('--background-tertiary', '#3a3a3a');

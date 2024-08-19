@@ -12,7 +12,8 @@ export default function Sidenav({setMessageIdHandler}) {
     const [users, setUsers] = useState([]);
 
     //handle sending message id to parent
-    function handleClick(id) {
+    function handleClick(id, e) {
+        localStorage.setItem('otherUser', e);
         setMessageIdHandler(id);
     }
 
@@ -50,11 +51,11 @@ export default function Sidenav({setMessageIdHandler}) {
             });
     }, []);
 
-    function findMessage(user, handler) {
+    function findMessage(user, handler, otherUser) {
         messages.forEach(message => {
             if (message.members.includes(user)) {
                 if (user !== localStorage.getItem('username')) {
-                    handler(message._id);
+                    handler(message._id, otherUser);
                 }
             }
         });
@@ -63,16 +64,16 @@ export default function Sidenav({setMessageIdHandler}) {
     useEffect(() => {
         document.getElementById('search-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                findMessage(e.target.value, handleClick);
+                findMessage(e.target.value, handleClick, e.target.value);
             }
         });
 
         document.getElementById('search-results').addEventListener('click', (e) => {
-            findMessage(e.target.innerText, handleClick);
+            findMessage(e.target.innerText, handleClick, e.target.innerText);
         });
 
         document.getElementById('search-button').addEventListener('click', (e) => {
-            findMessage(document.getElementById('search-input').value, handleClick);
+            findMessage(document.getElementById('search-input').value, handleClick, document.getElementById('search-input').value);
         });
     });
 
@@ -115,7 +116,7 @@ export default function Sidenav({setMessageIdHandler}) {
                 ) : (
                     <div className="sidenav-list">
                         {messages.map((message, index) => (
-                            <button className="sidenav-button" key={index} onClick={() => handleClick(message._id)}>
+                            <button className="sidenav-button" key={index} onClick={() => handleClick(message._id, message.members.filter(member => member !== localStorage.getItem('username'))[0])}>
                                 <div className="sidenav-item">
                                     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
                                     <div className="details">

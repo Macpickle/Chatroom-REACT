@@ -8,6 +8,7 @@ const {USER_ALREADY_EXISTS,
       INVALID_CREDENTIALS,
       CHAT_NOT_FOUND,
       USER_NOT_FOUND,
+      INTERNAL_SERVER_ERROR,
       } = require('../constants/constants');
 
 const { tryCatch } = require('../utils/tryCatch');
@@ -196,6 +197,34 @@ router.post('/api/messages', tryCatch(async (req, res) => {
 
     await newMessage.save();
     res.json({message: 'Message created successfully', status: 'ok'});
+}));
+
+router.post('/api/message', tryCatch(async (req, res) => {
+    const { members, message, sender, reciever } = req.body;
+    
+    if (!message) {
+        throw new appError(FIELD_MISSING, 'Message is empty!', 401);
+    }
+
+    if (!members || !sender || !reciever) {
+        throw new appError(INTERNAL_SERVER_ERROR, 'Error within the server!', 500);
+    }
+
+    const messageCollection = await Message.findOne({members: (sender, reciever)});
+
+    const messageTime = formattedDate();
+
+    const newMessage = {
+        message: message,
+        sender: sender,
+        time: messageTime,
+    }
+    
+    messageCollection.messages.push(newMessage);
+    messageCollection.recentMessage = message;
+    messageCollection.recentMessageTime = messageTime;
+    messageCollection.save();
+    res.json({message: 'Message Successfully sent!', status: 'ok'});
 }));
 
 //get all users, usernames and photos
