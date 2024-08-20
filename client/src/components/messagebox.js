@@ -10,10 +10,27 @@ export default function MessageBox(message) {
     const [input, setInput] = useState('');
     const [parrentID, setParentID] = useState('');
     let socket = socketIOClient('http://localhost:3000');
+
+    const updateChat = () => {
+        axios.get(`http://localhost:3000/api/messages`, {
+            params: {
+                messageID: message.messageID,
+            }
+        })
+            .then((res) => {
+                setMessages(res.data);
+                setParentID(res.data.messages._id);
+            })
+            .catch((err) => {
+                //show error
+                console.log(err);
+        });
+    }
     
     useEffect(() => {
         socket.on('message', (data) => {
             if (messages.messages) {
+                // for whatever reason this is the only way to live update, even with using updateChat, will fix later.
                 const messagesCopy = [...messages.messages.messages];
                 messagesCopy.push(data);
                 setMessages({messages: {messages: messagesCopy}});
@@ -21,24 +38,17 @@ export default function MessageBox(message) {
             }
 
         });
+
+        //not working
+        //socket.on('delete', (data) => {
+        //    updateChat();
+        //})
     }, [messages]);
 
     //populate messages
     useEffect(() => {
         if (message.messageID !== '') {
-            axios.get(`http://localhost:3000/api/messages`, {
-                params: {
-                    messageID: message.messageID,
-                }
-            })
-                .then((res) => {
-                    setMessages(res.data);
-                    setParentID(message.messageID);
-                })
-                .catch((err) => {
-                    //show error
-                    console.log(err);
-                });
+            updateChat()
         }
     }, [message]);
 
@@ -57,10 +67,15 @@ export default function MessageBox(message) {
         });
     };
 
+    useEffect(() => {
+        //scroll to bottom of messages
+        const messages = document.getElementById('messages');
+        messages.scrollTop = messages.scrollHeight;
+    }, [messages]);
 
     return (
         <div className="message-container">
-            <div className="message-content">
+            <div className="message-content" id = "messages">
             {messages.length !== 0 ? (
                 messages.messages.messages.map((message, index) => (
                     <div className="message" key={index}>
@@ -78,7 +93,7 @@ export default function MessageBox(message) {
                                 <p>{message.message}</p>
                             </div>
                         </div>
-                        <EditMessageBox messageID={message.id} parentMessageID={parrentID} />
+                        <EditMessageBox messageID={message._id} parentMessageID={parrentID} updateChat={updateChat}/>
                     </div>
                 ))
             ) : (
@@ -90,7 +105,7 @@ export default function MessageBox(message) {
             )}
             
             { messages.length !== 0 ? (
-            <div className="message-footer">
+            <div className="message-footer" id = "footer">
                 <input type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
                 <button className="send-button" onClick = {() => submitMessage()}>
                     <div className="tooltip">

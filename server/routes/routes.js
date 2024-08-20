@@ -2,6 +2,7 @@ const router = require('express').Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const appError = require('../utils/appError.js');
+const mongoose = require('mongoose');
 const {USER_ALREADY_EXISTS,
       INVALID_LOGIN_CREDENTIALS,
       FIELD_MISSING,
@@ -19,6 +20,7 @@ const { forgetPassword, resetPassword } = require('../controllers/auth');
 //models
 const User = require('../models/Users');
 const Message = require('../models/messages');
+const messages = require('../models/messages');
 
 const formattedDate = () => {
     const date = new Date();
@@ -86,7 +88,6 @@ router.get('/api/login', tryCatch(async (req, res) => {
 
 //login user
 router.post('/api/login', passport.authenticate('local', {
-    failureRedirect: '/',
     failureFlash: true,
 }), (req,res) => {
     res.status(200).json({
@@ -183,9 +184,10 @@ router.post('/api/messages', tryCatch(async (req, res) => {
     }
     
     const messageArray = {
-        "message": message,
-        "sender": sender,
-        "time": formattedDate(),
+        message: message,
+        sender: sender,
+        time: formattedDate(),
+        _id: new mongoose.Types.ObjectId(),
     }
 
     const newMessage = new Message({
@@ -218,6 +220,7 @@ router.post('/api/message', tryCatch(async (req, res) => {
         message: message,
         sender: sender,
         time: messageTime,
+        _id: new mongoose.Types.ObjectId(),
     }
     
     messageCollection.messages.push(newMessage);
@@ -403,6 +406,25 @@ router.post('/api/delete', tryCatch(async (req, res) => {
 
     await User.deleteOne({username: username});
     res.json({message: "User deleted successfully", status: "ok"});
+}));
+
+router.post('/api/deleteMessage', tryCatch(async (req, res) => {
+    const {messageID, parentMessageID} = req.body;
+
+    if (!messageID || !parentMessageID) {
+        throw new appError(FIELD_MISSING, "Field is missing.", 401);
+    }
+
+    const message = await Message.findOne({_id: parentMessageID})
+    
+    if (!message) {
+        throw new appError(CHAT_NOT_FOUND, "Message not found.", 400);
+    }
+
+    message.messages = message.messages.filter(message => message._id != messageID);
+
+    message.save();
+    res.json({message: "Message deleted successfully", status: "ok"});
 }));
 
 module.exports = router;

@@ -91,6 +91,10 @@ io.on('connection', (socket) => {
     socket.on('message', (data) => {
         io.emit('message', data);
     });
+
+    socket.on('delete', (data) => {
+        io.emit('delete', data);
+    })
 });
 
 server.listen(3000, () => {
