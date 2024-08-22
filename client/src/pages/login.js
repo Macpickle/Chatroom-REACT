@@ -11,16 +11,6 @@ function Login() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    //useEffect(() => {
-    //    axios.get('http://localhost:3000/api/login', {withCredentials: true}).then((res) => {
-    //        if (res.data.user) {
-    //            navigate('/home');
-    //        }
-    //    }).catch((err) => {
-    //        console.log(err);
-    //    })
-    //}, [navigate]);
-
     const submitForm = (e) => {
         e.preventDefault();
         //make a fetch request to the server
@@ -30,8 +20,9 @@ function Login() {
             remember: loginRemember,
         }, { withCredentials: true }).then((res) => {
             //redirect to the home page
+            localStorage.setItem('remember', loginRemember);
             localStorage.setItem('username', res.data.username);
-            navigate('/home');
+            navigate('/');
 
         }).catch((err) => {
             //create an error message event

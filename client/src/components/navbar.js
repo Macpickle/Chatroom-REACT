@@ -13,7 +13,7 @@ export default function Navbar() {
     const logoutUser = () => {
         localStorage.clear();
         axios.get('http://localhost:3000/api/logout').then(() => {
-            navigate('/');
+            navigate('/login');
         });
     }
 
@@ -45,7 +45,7 @@ export default function Navbar() {
                         <button className="navbar-dropdown-option" onClick = {() => navigate('/settings')}>
                             <h2>Settings</h2>
                         </button>
-                        <button className="navbar-dropdown-option" onClick = {() => navigate('/home')}>
+                        <button className="navbar-dropdown-option" onClick = {() => navigate('/')}>
                             <h2>Home</h2>
                         </button>
                         <button className="navbar-dropdown-option" onClick={logoutUser}>

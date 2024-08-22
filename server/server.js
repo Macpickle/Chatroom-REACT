@@ -9,6 +9,7 @@ const flash = require('express-flash');
 const passport = require('passport');
 const initpassport = require('./utils/passport-config');
 const session = require('express-session');
+const cookieParser = require("cookie-parser");
 const MongoDBStore = require('connect-mongodb-session')(session);
 const mongoose = require('mongoose');
 
@@ -25,8 +26,6 @@ const io = new Server(server,
         }
     }
 );
-
-
 
 //models
 const User = require('./models/Users');
@@ -61,7 +60,7 @@ app.use(session({
     secret: process.env.SECRET_KEY,
     store: store,
     cookie: {
-        maxAge: parseInt(process.env.SESSION_LIFE),
+        maxAge: 60 * 60 * 24,
         sameSite: true,
         secure: IN_PRODUCTION,
         },

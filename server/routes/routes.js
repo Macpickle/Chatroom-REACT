@@ -99,10 +99,15 @@ router.post('/api/login', passport.authenticate('local', {
 
 //logout user
 router.get('/api/logout', (req, res) => {
-    req.session.destroy();
     req.logout();
-    res.clearCookie('sid');
-    res.json({message: 'Logged out successfully'});
+    req.session.destroy(function (err) {
+        if(err) {
+            console.log("error: " + err);
+            res.status(500).json({message: "Error destroying session"});
+        } else{
+            res.clearCookie('sid');
+            res.status(200).json({message: "Logged out successfully"});
+        }});
 });
 
 //handle messaging

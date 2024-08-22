@@ -10,7 +10,7 @@ function Home() {
   function setMessageIdHandler(id) {
     setMessageID(id);
   }
-  
+
   return (
     <div>
       <Navbar />

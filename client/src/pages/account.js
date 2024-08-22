@@ -35,7 +35,7 @@ function Account() {
                 <h2> Hello, {user.user.username}! </h2>
                 <div className = "account-options">
                   <button onClick = {() => navigate("/settings")}>Settings</button>
-                  <button onClick = {() => navigate("/home")}>Home</button>
+                  <button onClick = {() => navigate("/")}>Home</button>
                 </div>
               </div>
             </div>

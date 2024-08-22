@@ -9,21 +9,22 @@ import RequiredAuth from './utils/requiredAuth';
 import React from 'react';
 import theme from './themeSetter';
 
-
 function App() {
     //set theme on app load
     theme();
     return (
         <Routes>
-            <Route element={<RequiredAuth/> }>
-                <Route path="/home" element={<Home />} />
+            <Route element={<RequiredAuth callbackURL = {'/login'}/>}>
+                <Route path="/" element={<Home />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/settings" element={<Settings />} />
             </Route>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="*" element={<h1>404 Not Found</h1>} />
+                <Route element={<RequiredAuth callbackURL = {'/'}/>}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="*" element={<h1>404 Not Found</h1>} />
+            </Route>
         </Routes>
     );
     
