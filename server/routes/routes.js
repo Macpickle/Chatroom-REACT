@@ -238,6 +238,27 @@ router.post('/api/message', tryCatch(async (req, res) => {
     res.json({message: 'Message Successfully sent!', status: 'ok'});
 }));
 
+router.post('/api/editMessage', tryCatch(async (req, res) => {
+    const {messageID, message, parrentID } = req.body;
+
+    if (!message) {
+        throw new appError(FIELD_MISSING, 'Message is empty!', 401);
+    } 
+
+    const originalMessageArray = await Message.findOne({_id: parrentID}, {messages: 1})
+    var originalMessage;
+
+    for (var i = 0; i < originalMessageArray.messages.length; i++) {
+        if (originalMessageArray.messages[i]._id == messageID) {
+            originalMessage = originalMessageArray.messages[i];
+        }
+    }
+
+    originalMessage.message = message;
+    originalMessageArray.save();
+    res.json({message: 'message successfully updated!', status: 'ok'})
+}));
+
 //get all users, usernames and photos
 router.get('/api/users', tryCatch(async (req, res) => {
     const users = await User.find({}, {username: 1, photo: 1});

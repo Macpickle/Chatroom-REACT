@@ -1,19 +1,29 @@
 import "../stylesheet/message.css";
 import "../stylesheet/style.css";
 import EditMessageBox from "./editMesagebox";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 
 export default function MessageBox({messageID, socketConnection}) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
+    const [editField, setEditField] = useState('');
     const [parrentID, setParentID] = useState('');
+    const [editMessageID, setEditID] = useState('');
+
+    /*
+    *   changes state of editing message, while also setting the editMessageID
+    *   returns void
+    */
+   const editMessage = (data) => {
+        setEditID(data)
+   };
 
     /*
     *   retrieves messageID's message content
     *   returns void
     */
-    const getMessages = () => {
+    const getMessages = useCallback(() => {
         axios.get('http://localhost:3000/api/messages', {
                 params: {
                     messageID: messageID,
@@ -26,23 +36,24 @@ export default function MessageBox({messageID, socketConnection}) {
             .catch(error => {
                 console.error(error);
         });
-    };
+    }, [messageID]);
 
     /*
     *  updates messages on the client end 
     *  returns void
     */
-    const updateMessages = () => {
-        if (messages != "") {
+    const updateMessages = useCallback(() => {
+        if (messages !== "") {
+            console.log(messages);
             getMessages();
         }
-    };
+    }, [messages, getMessages]);
 
     /*
     *   sends message to database, then shows via websocket
     *   returns void
     */
-    const sendMessage = () => {
+    const sendMessage = useCallback(() => {
         axios.post(`http://localhost:3000/api/message`, {
             members: [localStorage.getItem('username'), localStorage.getItem('otherUser')],
             message: input,
@@ -51,14 +62,14 @@ export default function MessageBox({messageID, socketConnection}) {
         }).then(response => { 
             socketConnection.emit('message');
         });
-    }
+    }, [input, socketConnection]);
 
     // checks if the messageID prop has changed
     useEffect(() => {
         if (messageID) {
             getMessages();
         }
-    }, [messageID]);
+    }, [messageID, getMessages]);
 
     // deals with live updates to users
     useEffect(() => {
@@ -70,13 +81,41 @@ export default function MessageBox({messageID, socketConnection}) {
             updateMessages();
         });
 
-    }, [messages])
+    }, [messages, socketConnection, updateMessages])
 
     // onload, scroll to the bottom of the message container
     useEffect(() => {
         const messages = document.getElementById('messages');
         messages.scrollTop = messages.scrollHeight;
     }, [messages]);
+
+    // sets focus on input if editing message
+    useEffect(() => {
+        if (editMessageID) {
+            const inputField = document.getElementById("editMessage");
+            inputField.focus();
+
+            inputField.addEventListener('keydown', (e) => {
+                if (e.key === "Enter"){
+                    axios.post('http://localhost:3000/api/editMessage', {
+                        messageID: editMessageID,
+                        parrentID: parrentID,
+                        message: inputField.value
+                    }).then((res) => {
+                        socketConnection.emit('message');
+                        setEditID('');
+                        
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
+
+                if (e.key === "Escape"){
+                    setEditID('');
+                }
+            });
+        }
+    },  [editMessageID, socketConnection])
 
     return (
         <div className="message-container">
@@ -95,11 +134,22 @@ export default function MessageBox({messageID, socketConnection}) {
                                 </div>
                             </div>
                             <div className="message-body">
-                                <p>{message.message}</p>
+                                { editMessageID !== message._id ? (
+                                    <p>{message.message}</p>
+                                    ) : ( 
+                                        <input 
+                                            id = "editMessage" 
+                                            className = "editMessage" 
+                                            type="text" 
+                                            defaultValue={message.message} 
+                                            onBlur = {() => setEditID('')}
+                                        />
+                                    )
+                                }
                             </div>
                         </div>
                         {localStorage.getItem('username') === message.sender && (
-                            <EditMessageBox messageID={message._id} parentMessageID={parrentID} updateMessages={updateMessages} socketConnection={socketConnection}/>
+                            <EditMessageBox messageID={message._id} parentMessageID={parrentID} updateMessages={updateMessages} socketConnection={socketConnection} editMessage={editMessage}/>
                         )}
                     </div>
                 ))

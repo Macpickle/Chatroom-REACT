@@ -2,10 +2,9 @@ import "../stylesheet/message.css";
 import "../stylesheet/style.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit, faEllipsis, faReply } from '@fortawesome/free-solid-svg-icons'
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-export default function EditMessageBox({messageID, parentMessageID, updateMessages, socketConnection}) {
+export default function EditMessageBox({messageID, parentMessageID, updateMessages, socketConnection, editMessage}) {
     const deleteMessage = () => {
         axios.post('http://localhost:3000/api/deleteMessage', {
             messageID: messageID,
@@ -28,7 +27,7 @@ export default function EditMessageBox({messageID, parentMessageID, updateMessag
                     <span className = "tooltiptext">Delete</span>
                 </div>
             </button>
-            <button className="edit-button">
+            <button className="edit-button" onClick = {() => editMessage(messageID)}>
                 <div className = "tooltip">
                     <div className = "icon">
                         <FontAwesomeIcon icon={faEdit}/>

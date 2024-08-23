@@ -301,3 +301,12 @@
     font-weight: 100;
     color: var(--text-colour-secondary);
 }
+
+.editMessage {
+    width: 20rem;
+    margin-top: 0.25rem;
+    padding: 0.25rem;
+    border: 1px solid var(--border-standard);
+    background-color: var(--background);
+    color: var(--text-colour);
+}
