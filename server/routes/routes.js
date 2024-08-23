@@ -206,6 +206,7 @@ router.post('/api/messages', tryCatch(async (req, res) => {
     res.json({message: 'Message created successfully', status: 'ok'});
 }));
 
+// add a new message to an existing message
 router.post('/api/message', tryCatch(async (req, res) => {
     const { members, message, sender, reciever } = req.body;
     
@@ -220,18 +221,20 @@ router.post('/api/message', tryCatch(async (req, res) => {
     const messageCollection = await Message.findOne({members: (sender, reciever)});
 
     const messageTime = formattedDate();
+    const messageID = new mongoose.Types.ObjectId();
 
     const newMessage = {
         message: message,
         sender: sender,
         time: messageTime,
-        _id: new mongoose.Types.ObjectId(),
+        _id: messageID,
     }
     
     messageCollection.messages.push(newMessage);
     messageCollection.recentMessage = message;
     messageCollection.recentMessageTime = messageTime;
     messageCollection.save();
+    
     res.json({message: 'Message Successfully sent!', status: 'ok'});
 }));
 

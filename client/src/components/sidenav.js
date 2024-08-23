@@ -1,6 +1,6 @@
 import "../stylesheet/style.css";
 import "../stylesheet/sidenav.css";
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import CreateMessage from "../pages/createMessage";
@@ -21,8 +21,11 @@ export default function Sidenav({setMessageIdHandler}) {
     const [loading, setLoading] = useState(true);
     const [showCreateMessage, setShowCreateMessage] = useState(false);
 
-    //get messages that belongs to the user
-    function getMessages() {
+    /*
+    *   retrieves messages from the server that user has
+    *   returns void
+    */
+    const getMessages = () => {
         axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'))
             .then(response => {
                 setMessages(response.data);
@@ -30,13 +33,12 @@ export default function Sidenav({setMessageIdHandler}) {
             })
             .catch(error => {
                 console.error(error);
-            }
-        );
-    }
-
+        });
+    };
+    
     //populate messages
     useEffect(() => {
-        getMessages()
+        getMessages();
     }, []);
 
     useEffect(() => {

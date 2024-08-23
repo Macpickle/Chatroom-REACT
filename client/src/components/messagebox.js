@@ -3,72 +3,77 @@ import "../stylesheet/style.css";
 import EditMessageBox from "./editMesagebox";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import socketIOClient from "socket.io-client";
 
-export default function MessageBox(message) {
+export default function MessageBox({messageID, socketConnection}) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [parrentID, setParentID] = useState('');
-    let socket = socketIOClient('http://localhost:3000');
 
-    const updateChat = () => {
-        axios.get(`http://localhost:3000/api/messages`, {
-            params: {
-                messageID: message.messageID,
-            }
-        })
-            .then((res) => {
-                setMessages(res.data);
-                setParentID(res.data.messages._id);
+    /*
+    *   retrieves messageID's message content
+    *   returns void
+    */
+    const getMessages = () => {
+        axios.get('http://localhost:3000/api/messages', {
+                params: {
+                    messageID: messageID,
+                }
             })
-            .catch((err) => {
-                //show error
-                console.log(err);
+            .then(response => {
+                setMessages(response.data);
+                setParentID(response.data.messages._id);
+            })
+            .catch(error => {
+                console.error(error);
         });
-    }
-    
-    useEffect(() => {
-        socket.on('message', (data) => {
-            if (messages.messages) {
-                // for whatever reason this is the only way to live update, even with using updateChat, will fix later.
-                const messagesCopy = [...messages.messages.messages];
-                messagesCopy.push(data);
-                setMessages({messages: {messages: messagesCopy}});
-                setInput(''); //sets all users to '', fix
-            }
+    };
 
-        });
-
-        //not working
-        //socket.on('delete', (data) => {
-        //    updateChat();
-        //})
-    }, [messages]);
-
-    //populate messages
-    useEffect(() => {
-        if (message.messageID !== '') {
-            updateChat()
+    /*
+    *  updates messages on the client end 
+    *  returns void
+    */
+    const updateMessages = () => {
+        if (messages != "") {
+            getMessages();
         }
-    }, [message]);
+    };
 
-    const submitMessage = () => {
+    /*
+    *   sends message to database, then shows via websocket
+    *   returns void
+    */
+    const sendMessage = () => {
         axios.post(`http://localhost:3000/api/message`, {
             members: [localStorage.getItem('username'), localStorage.getItem('otherUser')],
             message: input,
             sender: localStorage.getItem('username'),
             reciever: localStorage.getItem('otherUser'),
-        })
-
-        socket.emit('message', {
-            message: input,
-            sender: localStorage.getItem('username'),
-            time: new Date().toLocaleTimeString(),
+        }).then(response => { 
+            socketConnection.emit('message');
         });
-    };
+    }
 
+    // checks if the messageID prop has changed
     useEffect(() => {
-        //scroll to bottom of messages
+        if (messageID) {
+            getMessages();
+        }
+    }, [messageID]);
+
+    // deals with live updates to users
+    useEffect(() => {
+        socketConnection.on('message', (data) => {
+            updateMessages();         
+        });
+
+        socketConnection.on('delete', (data) => {
+            updateMessages();
+        });
+
+    }, [messages])
+
+    // onload, scroll to the bottom of the message container
+    useEffect(() => {
         const messages = document.getElementById('messages');
         messages.scrollTop = messages.scrollHeight;
     }, [messages]);
@@ -93,7 +98,9 @@ export default function MessageBox(message) {
                                 <p>{message.message}</p>
                             </div>
                         </div>
-                        <EditMessageBox messageID={message._id} parentMessageID={parrentID} updateChat={updateChat}/>
+                        {localStorage.getItem('username') === message.sender && (
+                            <EditMessageBox messageID={message._id} parentMessageID={parrentID} updateMessages={updateMessages} socketConnection={socketConnection}/>
+                        )}
                     </div>
                 ))
             ) : (
@@ -107,7 +114,7 @@ export default function MessageBox(message) {
             { messages.length !== 0 ? (
             <div className="message-footer" id = "footer">
                 <input type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
-                <button className="send-button" onClick = {() => submitMessage()}>
+                <button className="send-button" onClick = {() => sendMessage()}>
                     <div className="tooltip">
                         <h2>Send</h2>
                         <span className="tooltiptext">Send Message</span>
