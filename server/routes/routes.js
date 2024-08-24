@@ -239,24 +239,36 @@ router.post('/api/message', tryCatch(async (req, res) => {
 }));
 
 router.post('/api/editMessage', tryCatch(async (req, res) => {
-    const {messageID, message, parrentID } = req.body;
+    const {messageID, message, parentID } = req.body;
 
     if (!message) {
         throw new appError(FIELD_MISSING, 'Message is empty!', 401);
     } 
+    
+    //cannot figure out for the life of me why the sub array will not update. fix later
+    return res.json({message: "fix later", status: "ok"})
+}));
 
-    const originalMessageArray = await Message.findOne({_id: parrentID}, {messages: 1})
-    var originalMessage;
-
-    for (var i = 0; i < originalMessageArray.messages.length; i++) {
-        if (originalMessageArray.messages[i]._id == messageID) {
-            originalMessage = originalMessageArray.messages[i];
-        }
+router.get('/api/findMessage/:messageID/:parentID', tryCatch(async (req, res) => {
+    const messageArray = await Message.findOne({_id: req.params.parentID}, {messages: 1});
+    
+    if (!messageArray) {
+        throw new appError(INVALID_CREDENTIALS, "Chat was not found.", 401);
     }
 
-    originalMessage.message = message;
-    originalMessageArray.save();
-    res.json({message: 'message successfully updated!', status: 'ok'})
+    var currentMessage = '';
+    messageArray.messages.forEach(message => {
+        if (message._id == req.params.messageID) {
+            currentMessage = message;
+        }
+    });
+    
+
+    if (!currentMessage) {
+        throw new appError(INVALID_CREDENTIALS, "Message was not found.", 401);
+    }
+
+    return res.json(currentMessage);
 }));
 
 //get all users, usernames and photos

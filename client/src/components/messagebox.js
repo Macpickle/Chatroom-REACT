@@ -7,9 +7,9 @@ import axios from 'axios';
 export default function MessageBox({messageID, socketConnection}) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
-    const [editField, setEditField] = useState('');
-    const [parrentID, setParentID] = useState('');
+    const [parentID, setParentID] = useState('');
     const [editMessageID, setEditID] = useState('');
+    const [replying, setReply] = useState('');
 
     /*
     *   changes state of editing message, while also setting the editMessageID
@@ -19,11 +19,29 @@ export default function MessageBox({messageID, socketConnection}) {
         setEditID(data)
    };
 
+   /*
+   *    displays reply prompt
+   *    returns void
+   */
+   const replyMessage = (messageID, parentID) => {
+        axios.get('http://localhost:3000/api/findMessage/' + messageID + '/' + parentID)
+        
+        .then(response => {
+            setReply(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+        setReply(messageID);
+   };
+
     /*
     *   retrieves messageID's message content
     *   returns void
     */
     const getMessages = useCallback(() => {
+        if (!messageID) return;
+
         axios.get('http://localhost:3000/api/messages', {
                 params: {
                     messageID: messageID,
@@ -39,21 +57,10 @@ export default function MessageBox({messageID, socketConnection}) {
     }, [messageID]);
 
     /*
-    *  updates messages on the client end 
-    *  returns void
-    */
-    const updateMessages = useCallback(() => {
-        if (messages !== "") {
-            console.log(messages);
-            getMessages();
-        }
-    }, [messages, getMessages]);
-
-    /*
     *   sends message to database, then shows via websocket
     *   returns void
     */
-    const sendMessage = useCallback(() => {
+    const sendMessage = () => {
         axios.post(`http://localhost:3000/api/message`, {
             members: [localStorage.getItem('username'), localStorage.getItem('otherUser')],
             message: input,
@@ -62,7 +69,7 @@ export default function MessageBox({messageID, socketConnection}) {
         }).then(response => { 
             socketConnection.emit('message');
         });
-    }, [input, socketConnection]);
+    };
 
     // checks if the messageID prop has changed
     useEffect(() => {
@@ -73,15 +80,11 @@ export default function MessageBox({messageID, socketConnection}) {
 
     // deals with live updates to users
     useEffect(() => {
-        socketConnection.on('message', (data) => {
-            updateMessages();         
-        });
+        socketConnection.on('message', (data) => getMessages());       
 
-        socketConnection.on('delete', (data) => {
-            updateMessages();
-        });
+        socketConnection.on('delete', (data) => getMessages());
 
-    }, [messages, socketConnection, updateMessages])
+    }, [socketConnection, getMessages])
 
     // onload, scroll to the bottom of the message container
     useEffect(() => {
@@ -99,12 +102,13 @@ export default function MessageBox({messageID, socketConnection}) {
                 if (e.key === "Enter"){
                     axios.post('http://localhost:3000/api/editMessage', {
                         messageID: editMessageID,
-                        parrentID: parrentID,
+                        parentID: parentID,
                         message: inputField.value
                     }).then((res) => {
-                        socketConnection.emit('message');
-                        setEditID('');
-                        
+                        console.log(res);
+                        getMessages();
+                        setEditID('');                   
+                        console.log(messages);     
                     }).catch((error) => {
                         console.log(error);
                     });
@@ -115,7 +119,7 @@ export default function MessageBox({messageID, socketConnection}) {
                 }
             });
         }
-    },  [editMessageID, socketConnection])
+    },  [editMessageID, socketConnection, parentID])
 
     return (
         <div className="message-container">
@@ -148,9 +152,15 @@ export default function MessageBox({messageID, socketConnection}) {
                                 }
                             </div>
                         </div>
-                        {localStorage.getItem('username') === message.sender && (
-                            <EditMessageBox messageID={message._id} parentMessageID={parrentID} updateMessages={updateMessages} socketConnection={socketConnection} editMessage={editMessage}/>
-                        )}
+                            <EditMessageBox 
+                                messageID={message._id} 
+                                parentMessageID={parentID} 
+                                getMessages={getMessages} 
+                                socketConnection={socketConnection}
+                                editMessage={editMessage} 
+                                replyMessage={replyMessage}
+                                owner={localStorage.getItem('username') === message.sender}
+                            />
                     </div>
                 ))
             ) : (
@@ -163,6 +173,11 @@ export default function MessageBox({messageID, socketConnection}) {
             
             { messages.length !== 0 ? (
             <div className="message-footer" id = "footer">
+                { replying && (
+                    <div className = "reply-notify">
+                        <p>Replying to: {replying.sender}</p>
+                    </div>
+                )}
                 <input type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
                 <button className="send-button" onClick = {() => sendMessage()}>
                     <div className="tooltip">

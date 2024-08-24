@@ -15,6 +15,7 @@
     display: flex;
     flex-direction: column;
     padding-bottom: 0;
+    margin-bottom: 5rem;
 }
 
 .message-container .message-content .message {
@@ -80,15 +81,16 @@
 }
 
 .message-container .message-footer {
-    width: 100%;
+    width: 75%;
     height: 6rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    position: fixed;
     margin-top: auto;
-    padding: 1rem;
     padding-top: 0;
+    bottom: 0;
 }
 
 .message-container .message-footer h2 {
@@ -99,7 +101,7 @@
 
 
 .message-container .message-footer input {
-    width: calc(100% - 4rem);
+    width: 85%;
     height: 2.5rem;
     border: 1px solid var(--border-standard);
     border-radius: 1rem;
@@ -148,6 +150,24 @@
     background: var(--background-hover);
 }
 
+.message-container .message-footer .reply-notify {
+    width: fit-content;
+    height: 1rem;
+    background-color: var(--background);
+    color: var(--text-colour);
+    position: absolute;
+    top: 1.5rem;
+    left: 1rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.message-container .message-footer .reply-notify p {
+    font-size: 0.9rem;
+    font-weight: 100;
+}
+
 .edit-content {
     display: none;
     flex-direction: row;
@@ -156,14 +176,16 @@
     margin-top: -1rem;
     background-color: var(--background-hover);
     border-radius: 0.5rem;
-    width: 7.5rem;
+    width: fit-content;
+    max-width: 7.5rem;
     height: 2rem;
     border: 1px solid var(--border-standard);
+    overflow: hidden;
 }
 
 .edit-content .edit-button {
-    width: 25%;
-    height: 1.9rem;
+    width: 1.5rem;
+    height: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;

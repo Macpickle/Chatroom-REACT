@@ -4,13 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit, faEllipsis, faReply } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios';
 
-export default function EditMessageBox({messageID, parentMessageID, updateMessages, socketConnection, editMessage}) {
+export default function EditMessageBox({messageID, parentMessageID, getMessages, socketConnection, editMessage, replyMessage, owner}) {
     const deleteMessage = () => {
         axios.post('http://localhost:3000/api/deleteMessage', {
             messageID: messageID,
             parentMessageID: parentMessageID
         }).then((res) => {
-            updateMessages();
+            getMessages();
             socketConnection.emit('delete');
         }).catch((error) => {
             console.log(error);
@@ -19,6 +19,8 @@ export default function EditMessageBox({messageID, parentMessageID, updateMessag
 
     return (
         <div className = "edit-content">
+            <>
+            {owner && (
             <button className="edit-button" onClick = {deleteMessage}>
                 <div className = "tooltip">
                     <div className = "icon">
@@ -27,6 +29,10 @@ export default function EditMessageBox({messageID, parentMessageID, updateMessag
                     <span className = "tooltiptext">Delete</span>
                 </div>
             </button>
+            )}
+            </>
+            <>
+            {owner && (
             <button className="edit-button" onClick = {() => editMessage(messageID)}>
                 <div className = "tooltip">
                     <div className = "icon">
@@ -35,7 +41,9 @@ export default function EditMessageBox({messageID, parentMessageID, updateMessag
                     <span className = "tooltiptext">Edit</span>
                 </div>
             </button>
-            <button className="edit-button">
+            )}
+            </>
+            <button className="edit-button" onClick = {() => replyMessage(messageID, parentMessageID)}>
                 <div className = "tooltip">
                     <div className = "icon">
                         <FontAwesomeIcon icon={faReply}/>
