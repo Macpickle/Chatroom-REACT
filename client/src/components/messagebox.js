@@ -3,6 +3,8 @@ import "../stylesheet/style.css";
 import EditMessageBox from "./editMesagebox";
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function MessageBox({messageID, socketConnection}) {
     const [messages, setMessages] = useState([]);
@@ -27,12 +29,26 @@ export default function MessageBox({messageID, socketConnection}) {
         axios.get('http://localhost:3000/api/findMessage/' + messageID + '/' + parentID)
         
         .then(response => {
+            const message = document.getElementById(response.data._id);
+
             setReply(response.data);
+            document.getElementById('message-text-box').focus();
+            message.style.backgroundColor = document.documentElement.style.getPropertyValue("--background-hover");
+            
+            function handleKeydown (e) {   
+                if (e.key === "Escape") {
+                    document.removeEventListener('keydown', handleKeydown);
+                    setReply('');
+                    message.style.backgroundColor = '';
+                }
+            };
+
+            document.addEventListener('keydown', handleKeydown);
         })
         .catch(error => {
             console.error(error);
         });
-        setReply(messageID);
+        setReply(messageID);     
    };
 
     /*
@@ -66,7 +82,9 @@ export default function MessageBox({messageID, socketConnection}) {
             message: input,
             sender: localStorage.getItem('username'),
             reciever: localStorage.getItem('otherUser'),
+            reply: replying,
         }).then(response => { 
+            setReply('');
             socketConnection.emit('message');
         });
     };
@@ -105,7 +123,6 @@ export default function MessageBox({messageID, socketConnection}) {
                         parentID: parentID,
                         message: inputField.value
                     }).then((res) => {
-                        console.log(res);
                         getMessages();
                         setEditID('');                   
                         console.log(messages);     
@@ -126,7 +143,7 @@ export default function MessageBox({messageID, socketConnection}) {
             <div className="message-content" id = "messages">
             {messages.length !== 0 ? (
                 messages.messages.messages.map((message, index) => (
-                    <div className="message" key={index}>
+                    <div className="message" key={index} id = {message._id}>
                         <div className="profile-pic">
                             <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
                         </div>
@@ -136,6 +153,12 @@ export default function MessageBox({messageID, socketConnection}) {
                                 <div className="message-time">
                                     <p>- {message.time}</p>
                                 </div>
+                                    {message.reply && (
+                                        <div className = "reply-container">
+                                            <div className = "reply-line"><FontAwesomeIcon icon={faArrowRight}/></div>
+                                            <p className = "reply-max-width">{message.reply.message}</p>
+                                        </div>
+                                    )}
                             </div>
                             <div className="message-body">
                                 { editMessageID !== message._id ? (
@@ -178,7 +201,7 @@ export default function MessageBox({messageID, socketConnection}) {
                         <p>Replying to: {replying.sender}</p>
                     </div>
                 )}
-                <input type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
+                <input id = "message-text-box" type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
                 <button className="send-button" onClick = {() => sendMessage()}>
                     <div className="tooltip">
                         <h2>Send</h2>

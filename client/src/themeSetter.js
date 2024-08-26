@@ -21,6 +21,7 @@ const theme = () => {
                     root.style.setProperty('--text-colour-secondary', '#7d7d7d');
                     root.style.setProperty('--text-colour-tertiary', '#7d7d7d');
                     root.style.setProperty('--text-colour-title', '#e6e6e6');
+                    root.style.setProperty('--text-colour-special', '#007ac1');
                 }
             
                 else if (theme === "dark") {
@@ -35,6 +36,7 @@ const theme = () => {
                     root.style.setProperty('--text-colour-secondary', '#b1b1b1');
                     root.style.setProperty('--text-colour-tertiary', '#b1b1b1');
                     root.style.setProperty('--text-colour-title', '#f1f1f1');
+                    root.style.setProperty('--text-colour-special', '#007ac1');
                 }
 
                 else {

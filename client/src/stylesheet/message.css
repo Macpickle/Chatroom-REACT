@@ -332,3 +332,25 @@
     background-color: var(--background);
     color: var(--text-colour);
 }
+
+.reply-container {
+    max-width: 20rem;
+    margin-left: 0.5em;
+    display: flex;
+    flex-direction: row;
+}
+
+.reply-container .reply-line {
+    width: 1rem;
+    margin-right: 0.25rem;
+    color: var(--text-colour-special);
+}
+
+.reply-max-width {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: fit-content;
+    white-space: nowrap;
+    text-decoration: underline;
+}

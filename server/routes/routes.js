@@ -208,7 +208,7 @@ router.post('/api/messages', tryCatch(async (req, res) => {
 
 // add a new message to an existing message
 router.post('/api/message', tryCatch(async (req, res) => {
-    const { members, message, sender, reciever } = req.body;
+    const { members, message, sender, reciever, reply } = req.body;
     
     if (!message) {
         throw new appError(FIELD_MISSING, 'Message is empty!', 401);
@@ -228,11 +228,13 @@ router.post('/api/message', tryCatch(async (req, res) => {
         sender: sender,
         time: messageTime,
         _id: messageID,
+        reply: reply,
     }
     
     messageCollection.messages.push(newMessage);
     messageCollection.recentMessage = message;
     messageCollection.recentMessageTime = messageTime;
+
     messageCollection.save();
     
     res.json({message: 'Message Successfully sent!', status: 'ok'});

@@ -10,6 +10,7 @@
     --text-colour-secondary: #7d7d7d;
     --text-colour-tertiary: #7d7d7d;
     --text-colour-title: #e6e6e6;
+    --text-colour-special: #007ac1;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,5 +26,6 @@
         --text-colour-secondary: #b1b1b1;
         --text-colour-tertiary: #b1b1b1;
         --text-colour-title: #f1f1f1;
+        --text-colour-special: #007ac1;
     }
 }
