@@ -87,8 +87,16 @@ app.use(errorHandler);
 
 //socket server
 io.on('connection', (socket) => {
-    socket.on('message', (data) => {
-        io.emit('message', data);
+    console.log("USER CONNECT: " + socket.id);
+
+    socket.on('join', (data) => {
+        console.log("joined: " + data);
+        socket.join(data);
+    })
+
+    socket.on('message', (data, parent) => {
+        console.log(parent);
+        io.to(parent).emit('message', data);
     });
 
     socket.on('delete', (data) => {

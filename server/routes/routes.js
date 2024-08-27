@@ -124,7 +124,7 @@ router.get('/api/messages', tryCatch(async (req, res) => {
         throw new appError(CHAT_NOT_FOUND, 'Chat not found', 401);
     }
 
-    res.json({messages});
+    res.json(messages);
 }));
 
 router.get('/api/messages/:id', tryCatch(async (req, res) => {
@@ -237,7 +237,7 @@ router.post('/api/message', tryCatch(async (req, res) => {
 
     messageCollection.save();
     
-    res.json({message: 'Message Successfully sent!', status: 'ok'});
+    res.json({message: 'Message Successfully sent!', status: 'ok', messageContent: newMessage});
 }));
 
 router.post('/api/editMessage', tryCatch(async (req, res) => {
@@ -453,6 +453,7 @@ router.post('/api/delete', tryCatch(async (req, res) => {
 
 router.post('/api/deleteMessage', tryCatch(async (req, res) => {
     const {messageID, parentMessageID} = req.body;
+    console.log(messageID, parentMessageID);
 
     if (!messageID || !parentMessageID) {
         throw new appError(FIELD_MISSING, "Field is missing.", 401);

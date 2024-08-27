@@ -64,12 +64,17 @@ export default function MessageBox({messageID, socketConnection}) {
                 }
             })
             .then(response => {
-                setMessages(response.data);
-                setParentID(response.data.messages._id);
+                setMessages(response.data.messages);
+                setParentID(response.data._id);
+                socketConnection.emit('join', response.data._id);
             })
             .catch(error => {
                 console.error(error);
         });
+
+        return () => {
+            socketConnection.emit('leave', parentID);
+        }
     }, [messageID]);
 
     /*
@@ -85,7 +90,7 @@ export default function MessageBox({messageID, socketConnection}) {
             reply: replying,
         }).then(response => { 
             setReply('');
-            socketConnection.emit('message');
+            socketConnection.emit('message', response.data.messageContent, parentID);
         });
     };
 
@@ -98,11 +103,15 @@ export default function MessageBox({messageID, socketConnection}) {
 
     // deals with live updates to users
     useEffect(() => {
-        socketConnection.on('message', (data) => getMessages());       
-
+        //setMessages(prevMessages => [...prevMessages, data])
+        socketConnection.on('message', (data) => {console.log('recieved: ' + data); setMessages(prevMessages => [...prevMessages, data])});
         socketConnection.on('delete', (data) => getMessages());
-
-    }, [socketConnection, getMessages])
+        return () => {
+            socketConnection.off('message');
+            socketConnection.off('delete');
+        }
+    }, []);
+    
 
     // onload, scroll to the bottom of the message container
     useEffect(() => {
@@ -125,7 +134,6 @@ export default function MessageBox({messageID, socketConnection}) {
                     }).then((res) => {
                         getMessages();
                         setEditID('');                   
-                        console.log(messages);     
                     }).catch((error) => {
                         console.log(error);
                     });
@@ -141,8 +149,8 @@ export default function MessageBox({messageID, socketConnection}) {
     return (
         <div className="message-container">
             <div className="message-content" id = "messages">
-            {messages.length !== 0 ? (
-                messages.messages.messages.map((message, index) => (
+            {messages.length !== 0  || parentID ? (
+                messages.map((message, index) => (
                     <div className="message" key={index} id = {message._id}>
                         <div className="profile-pic">
                             <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
@@ -194,7 +202,7 @@ export default function MessageBox({messageID, socketConnection}) {
                 </div>
             )}
             
-            { messages.length !== 0 ? (
+            { messages.length !== 0 || parentID ? (
             <div className="message-footer" id = "footer">
                 { replying && (
                     <div className = "reply-notify">
@@ -208,12 +216,13 @@ export default function MessageBox({messageID, socketConnection}) {
                         <span className="tooltiptext">Send Message</span>
                     </div>
                 </button>
-                <button className="attach-button">
+
+                {/* <button className="attach-button">
                     <div className="tooltip">
                         <h2>+</h2>
                         <span className="tooltiptext">Attach File</span>
                     </div>
-                </button>
+                </button> */}
             </div>
             ) : (
                 <div></div>
