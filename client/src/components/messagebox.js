@@ -4,7 +4,7 @@ import EditMessageBox from "./editMesagebox";
 import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 export default function MessageBox({messageID, socketConnection}) {
     const [messages, setMessages] = useState([]);
@@ -12,6 +12,7 @@ export default function MessageBox({messageID, socketConnection}) {
     const [parentID, setParentID] = useState('');
     const [editMessageID, setEditID] = useState('');
     const [replying, setReply] = useState('');
+    const [blocked, setBlocked] = useState(false);
 
     /*
     *   changes state of editing message, while also setting the editMessageID
@@ -72,10 +73,17 @@ export default function MessageBox({messageID, socketConnection}) {
                 console.error(error);
         });
 
+        axios.get('http://localhost:3000/api/isBlocked/' + localStorage.getItem('otherUser') + '/' + localStorage.getItem('username'))
+        .then(response => {
+            setBlocked(response.data);
+        }).catch(error => {
+            console.log(error);
+        });
+
         return () => {
             socketConnection.emit('leave', parentID);
         }
-    }, [messageID]);
+    }, [messageID, blocked]);
 
     /*
     *   sends message to database, then shows via websocket
@@ -111,7 +119,6 @@ export default function MessageBox({messageID, socketConnection}) {
             socketConnection.off('delete');
         }
     }, []);
-    
 
     // onload, scroll to the bottom of the message container
     useEffect(() => {
@@ -148,6 +155,10 @@ export default function MessageBox({messageID, socketConnection}) {
 
     return (
         <div className="message-container">
+            <div className = "message-mobile-container">
+                <button className = "message-mobile-icon"><FontAwesomeIcon icon={faArrowLeft}/></button>
+                <div className = "message-mobile-user">{localStorage.getItem('otherUser')}</div>
+            </div>
             <div className="message-content" id = "messages">
             {messages.length !== 0  || parentID ? (
                 messages.map((message, index) => (
@@ -209,8 +220,11 @@ export default function MessageBox({messageID, socketConnection}) {
                         <p>Replying to: {replying.sender}</p>
                     </div>
                 )}
-                <input id = "message-text-box" type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} />
-                <button className="send-button" onClick = {() => sendMessage()}>
+                {blocked && (
+                    <p className = "blocked">you or another user has blocked this chat!</p>
+                )}
+                <input id = "message-text-box" type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} disabled={blocked}/>
+                <button className="send-button" onClick = {() => sendMessage()} disabled={blocked}>
                     <div className="tooltip">
                         <h2>Send</h2>
                         <span className="tooltiptext">Send Message</span>

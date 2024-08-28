@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+const axios = require('axios');
 const appError = require('../utils/appError.js');
 const mongoose = require('mongoose');
 const {USER_ALREADY_EXISTS,
@@ -10,6 +11,7 @@ const {USER_ALREADY_EXISTS,
       CHAT_NOT_FOUND,
       USER_NOT_FOUND,
       INTERNAL_SERVER_ERROR,
+      SERVER_ERROR,
       } = require('../constants/constants');
 
 const { tryCatch } = require('../utils/tryCatch');
@@ -131,6 +133,31 @@ router.get('/api/messages/:id', tryCatch(async (req, res) => {
     const message = await Message.find({members: req.params.id});
     res.json(message);
 }));
+
+router.get('/api/isBlocked/:otherUser/:currentUser', tryCatch(async (req, res) => {
+    const {otherUser, currentUser} = req.params;
+    
+    if (!otherUser, !currentUser) {
+        throw new appError(SERVER_ERROR, 'Server is not responding', 500);
+    }
+
+    const currentUserBlocked = await User.findOne({username: currentUser}, {blocked: 1});
+    const otherUserBlocked = await User.findOne({username: otherUser}, {blocked: 1});
+    var blocked = false;
+    for (let i = 0; i < currentUserBlocked.blocked.length; i++) {
+        if (currentUserBlocked.blocked[i].username == otherUser) {
+            blocked = true;
+        }
+    }
+
+    for (let i = 0; i < otherUserBlocked.blocked.length; i++) {
+        if (otherUserBlocked.blocked[i].username == currentUser) {
+            blocked = true;
+        }
+    }
+    
+    res.json(blocked);
+}))
 
 router.get('/api/messageUsers/:id', tryCatch(async (req, res) => {
     const message = await Message.find({members: req.params.id}, {members: 1});  

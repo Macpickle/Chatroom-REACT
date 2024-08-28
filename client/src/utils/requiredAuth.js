@@ -10,7 +10,7 @@ const RequiredAuth = ({callbackURL}) => {
     //    console.log(err);
     //})
 
-    if (callbackURL == "/login") {
+    if (callbackURL === "/login") {
         return user ? <Outlet/> : <Navigate to = '/login'/>
     } 
     

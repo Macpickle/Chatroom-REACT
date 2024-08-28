@@ -67,3 +67,9 @@
     background-color: var(--background-hover);
     transform: scale(1.05);
 }
+
+@media screen and (max-width: 768px){
+    .account-container .account-box {
+        width: 90%;
+    }
+}

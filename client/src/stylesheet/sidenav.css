@@ -1,5 +1,5 @@
 .sidenav-container {
-    width: 20rem;
+    width: 25%;
     height: calc(100vh - 4rem);
     background-color: var(--background-colour);
     border-right: 1px solid var(--border-standard);
@@ -138,3 +138,9 @@
 }
 
 
+
+@media screen and (max-width: 768px) {
+    .sidenav-container {
+        display: none;
+    }
+}

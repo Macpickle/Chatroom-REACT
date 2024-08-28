@@ -110,24 +110,22 @@ function Subscreen({closeSubscreen, title, method}) {
 
     const loadFile = async () => {
         //test later think i did it but imgur limit
-        const file = document.getElementById('file-input').files[0];
+        const fileInput = document.getElementById('file-input');
+        const file = fileInput.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
 
-        const reader = new FormData();
-        reader.append('file', file);
-
-        axios.post('https://api.imgur.com/3/image', {
-            method: 'POST',
+        await axios.post('https://api.imgur.com/3/image', formData, {
             headers: {
-                'Authorization': "Client-ID " + process.env.IMGUR_CLIENT_ID,
-            },
-            body: reader
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
+            "Content-Type": "multipart/form-data",
+            "Authorization": "Client-ID " + process.env.IMGUR_CLIENT_ID,
+            }
+        }).then(response => {
+            console.log(response);
         }).catch(error => {
             console.error(error);
         });
+        
     }
 
     const deleteUser = () => {

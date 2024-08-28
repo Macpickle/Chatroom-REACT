@@ -1,10 +1,10 @@
 .message-container {
-    margin-left: 20rem;
     height: calc(100vh - 4rem);
     display: flex;
     flex-direction: column;
     position: fixed;
-    width: calc(100% - 20rem);
+    right: 0;
+    width: 75%;
 }
 
 .message-container .message-content {
@@ -352,4 +352,69 @@
     width: fit-content;
     white-space: nowrap;
     text-decoration: underline;
+}
+
+.message-mobile-container {
+    height: 4rem;
+    width: 100%;
+    background-color: var(--background);
+    position: relative;
+    align-items: center;
+    justify-content: flex-start;
+    color: var(--icon-colour);
+    padding-left: 1rem;
+    font-size: 2.5rem;
+    display: none;
+}
+
+.message-mobile-container .message-mobile-icon {
+    position: absolute;
+}
+
+.message-mobile-container button {
+    background-color: transparent;
+    color: var(--icon-colour);
+    width: 3rem;
+    height: 3rem;
+    font-size: 2.5rem;
+    border: transparent;
+}
+
+.message-mobile-container .message-mobile-user {
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.75rem;
+}
+
+.blocked {
+    color: red;
+    background-color: var(--background);
+    position: absolute;
+    margin-top: -2rem;
+    margin-left: 1rem;
+    padding: 1rem;
+    font-size: 1.25rem;
+}
+
+@media screen and (max-width: 768px) {
+    .message-container {
+        width: 100%;
+    }
+
+    .message-container .message-footer {
+        width: 100%;
+        padding-right: 2rem;
+    }
+
+    .message-container .message-footer input {
+        width: 100%;
+    }
+
+    .message-container .message-footer .send-button {
+        display: none;
+    }
+
+    .message-mobile-container {
+        display: flex;
+    }
 }
