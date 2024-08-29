@@ -9,7 +9,6 @@ const flash = require('express-flash');
 const passport = require('passport');
 const initpassport = require('./utils/passport-config');
 const session = require('express-session');
-const cookieParser = require("cookie-parser");
 const MongoDBStore = require('connect-mongodb-session')(session);
 const mongoose = require('mongoose');
 
@@ -31,7 +30,8 @@ const io = new Server(server,
 const User = require('./models/Users');
 
 app.use(cors({
-    origin: 'http://localhost:3001',
+    origin: ['http://localhost:3001',
+        'http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
@@ -63,6 +63,7 @@ app.use(session({
         maxAge: 60 * 60 * 24,
         sameSite: true,
         secure: IN_PRODUCTION,
+        domain: 'localhost',
         },
     }
 ));
@@ -70,7 +71,6 @@ app.use(session({
 app.use(flash());
 
 //initialize passport
-app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
 initpassport(
@@ -81,6 +81,7 @@ initpassport(
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.urlencoded({extended: false}));
 
 app.use(externalRouter);
 app.use(errorHandler);

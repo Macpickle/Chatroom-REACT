@@ -7,9 +7,11 @@ import CreateMessage from "../pages/createMessage";
 import SearchUser from '../components/searchUser';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
 
-export default function Sidenav({setMessageIdHandler}) {    
+export default function Sidenav({setMessageIdHandler, showSidebar}) {    
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
 
     //handle sending message id to parent
     function handleClick(id, e) {
@@ -23,16 +25,22 @@ export default function Sidenav({setMessageIdHandler}) {
 
     /*
     *   retrieves messages from the server that user has
-    *   returns void
+    *   returns voidd
     */
     const getMessages = () => {
-        axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'))
+        axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'), { withCredentials: true })
             .then(response => {
                 setMessages(response.data);
                 setLoading(false);
             })
             .catch(error => {
-                console.error(error);
+                const {message} = error.response.data
+                if (message === "User was not set properly.") {
+                    localStorage.clear();
+                    axios.get('http://localhost:3000/api/logout').then(() => {
+                        navigate('/login');
+                    });
+                }
         });
     };
     
@@ -92,7 +100,7 @@ export default function Sidenav({setMessageIdHandler}) {
     return (
         <>
             {showCreateMessage && <CreateMessage closeMessage={closeMessage} getMessages={getMessages}/>}
-            <div className="sidenav-container">
+            <div className="sidenav-container" id = "sidenav">
                 <div className="sidenav-header">
                     <div className="sidenav-inline">
                         <h2>Messages</h2>
@@ -118,7 +126,10 @@ export default function Sidenav({setMessageIdHandler}) {
                 ) : (
                     <div className="sidenav-list">
                         {messages.map((message, index) => (
-                            <button className="sidenav-button" key={index} onClick={() => handleClick(message._id, message.members.filter(member => member !== localStorage.getItem('username'))[0])}>
+                            <button className="sidenav-button" key={index} onClick={() => {
+                                showSidebar(true); 
+                                handleClick(message._id, message.members.filter(member => member !== localStorage.getItem('username'))[0]);
+                            }}>
                                 <div className="sidenav-item">
                                     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
                                     <div className="details">

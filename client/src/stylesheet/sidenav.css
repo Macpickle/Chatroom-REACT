@@ -111,7 +111,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: flex-start;
-    width: 25%;
+    width: 100%;
 }
 
 .sidenav-container .sidenav-list .sidenav-item .time p {
@@ -137,10 +137,16 @@
     transform: scale(1.1);
 }
 
-
+@media screen and (min-width: 769px) {
+    .message-container {
+        width: 25%;
+        display: flex;
+    }
+}
 
 @media screen and (max-width: 768px) {
     .sidenav-container {
+        width: 100%;
         display: none;
     }
 }

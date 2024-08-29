@@ -38,7 +38,7 @@ function Login() {
                 document.getElementById('error-message').innerText = message;
             }
 
-            if (message === "Username or password is invalid") {
+            if (message === "Invalid username or password!") {
                 document.querySelectorAll('.login-input input').forEach(element => {
                     element.style.color = 'red';
                     element.style.borderBottom = '1px solid red';

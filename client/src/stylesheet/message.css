@@ -4,7 +4,6 @@
     flex-direction: column;
     position: fixed;
     right: 0;
-    width: 75%;
 }
 
 .message-container .message-content {
@@ -395,6 +394,15 @@
     padding: 1rem;
     font-size: 1.25rem;
 }
+
+@media screen and (min-width: 769px) {
+    .message-container {
+        width: 75%;
+        display: flex;
+    }
+}
+
+
 
 @media screen and (max-width: 768px) {
     .message-container {

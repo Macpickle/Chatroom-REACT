@@ -9,7 +9,6 @@ export default function Navbar() {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-
     const logoutUser = () => {
         localStorage.clear();
         axios.get('http://localhost:3000/api/logout').then(() => {

@@ -88,15 +88,47 @@ router.get('/api/login', tryCatch(async (req, res) => {
     }
 }));
 
+router.get('/api/loginSuccess', tryCatch(async (req, res) => {
+    if (req.user) {
+        res.status(200).json({
+            status: 'ok',
+            message: 'Login successful',
+            username: req.user.username,
+        });
+    } else {
+        throw new appError(SERVER_ERROR, 'User was not set properly', 500);
+    }
+}));
+
 //login user
-router.post('/api/login', passport.authenticate('local', {
-    failureFlash: true,
-}), (req,res) => {
-    res.status(200).json({
-        status: 'ok',
-        message: 'Login successful',
-        username: req.user.username,
-    });
+router.post('/api/login', function(req, res, next) {
+    const {username, password, remember} = req.body;
+
+    if (!username || !password) {
+        throw new appError(FIELD_MISSING, "Please fill in all fields", 401);
+    }
+
+    passport.authenticate('local', function(err, user, info) {
+
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            throw new appError(INVALID_LOGIN_CREDENTIALS, 'Invalid username or password!', 401);
+        }
+
+        req.logIn(user, function(err) {
+            if (err) {
+                return next(err);
+            }
+            res.status(200).json({
+                status: 'ok',
+                message: 'Login successful',
+                username: user.username,
+            });
+        });
+    })(req, res, next);
 });
 
 //logout user
@@ -131,6 +163,13 @@ router.get('/api/messages', tryCatch(async (req, res) => {
 
 router.get('/api/messages/:id', tryCatch(async (req, res) => {
     const message = await Message.find({members: req.params.id});
+    if (!req.user) {
+        throw new appError(SERVER_ERROR, "User was not set properly.", 500);
+    }
+    
+    if (req.user.username !== req.params.id) {
+        throw new appError(INVALID_CREDENTIALS, 'User does not have access to this chat', 401);
+    }
     res.json(message);
 }));
 

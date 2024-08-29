@@ -6,7 +6,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
-export default function MessageBox({messageID, socketConnection}) {
+export default function MessageBox({messageID, socketConnection, showSidebar}) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [parentID, setParentID] = useState('');
@@ -154,9 +154,9 @@ export default function MessageBox({messageID, socketConnection}) {
     },  [editMessageID, socketConnection, parentID])
 
     return (
-        <div className="message-container">
+        <div className="message-container" id = "message">
             <div className = "message-mobile-container">
-                <button className = "message-mobile-icon"><FontAwesomeIcon icon={faArrowLeft}/></button>
+                <button className = "message-mobile-icon" onClick = {() => showSidebar(false)}><FontAwesomeIcon icon={faArrowLeft}/></button>
                 <div className = "message-mobile-user">{localStorage.getItem('otherUser')}</div>
             </div>
             <div className="message-content" id = "messages">

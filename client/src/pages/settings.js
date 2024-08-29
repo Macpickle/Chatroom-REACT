@@ -81,6 +81,11 @@ function Settings() {
         document.getElementById("email").style.borderBottom = "2px solid red";
         document.getElementById("email").style.color = "red";
       }
+
+      else if (message === "Invalid email format"){
+        document.getElementById("email").style.borderBottom = "2px solid red";
+        document.getElementById("email").style.color = "red";
+      }
     });
   }
 
