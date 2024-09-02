@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const appError = require('../utils/appError.js');
 const mongoose = require('mongoose');
+const {sendMessage} = require('../chatbot/bot.js');
+
 const {USER_ALREADY_EXISTS,
       INVALID_LOGIN_CREDENTIALS,
       FIELD_MISSING,
@@ -162,11 +164,13 @@ router.get('/api/messages', tryCatch(async (req, res) => {
 }));
 
 router.get('/api/messages/:id', tryCatch(async (req, res) => {
+    console.log(req.user); //randomly stops working???????
+
     const message = await Message.find({members: req.params.id});
     if (!req.user) {
-        throw new appError(SERVER_ERROR, "User was not set properly.", 500);
+        return [];
     }
-    
+
     if (req.user.username !== req.params.id) {
         throw new appError(INVALID_CREDENTIALS, 'User does not have access to this chat', 401);
     }
@@ -305,6 +309,33 @@ router.post('/api/message', tryCatch(async (req, res) => {
     
     res.json({message: 'Message Successfully sent!', status: 'ok', messageContent: newMessage});
 }));
+
+router.post('/api/chatTest', tryCatch(async (req,res) => {
+    const { message } = req.body.body.message;
+    const { members, sender, reciever } = req.body.body;
+    const response = await sendMessage(message);
+
+    const messageCollection = await Message.findOne({members: (sender, reciever)});
+
+    const messageTime = formattedDate();
+    const messageID = new mongoose.Types.ObjectId();
+
+    const newMessage = {
+        message: response,
+        sender: sender,
+        time: messageTime,
+        _id: messageID,
+    }
+    
+    messageCollection.messages.push(newMessage);
+    messageCollection.recentMessage = response;
+    messageCollection.recentMessageTime = messageTime;
+
+    messageCollection.save();
+
+    res.json({message: 'Message Successfully sent!', status: 'ok', messageContent: newMessage});
+}));
+
 
 router.post('/api/editMessage', tryCatch(async (req, res) => {
     const {messageID, message, parentID } = req.body;
@@ -519,7 +550,6 @@ router.post('/api/delete', tryCatch(async (req, res) => {
 
 router.post('/api/deleteMessage', tryCatch(async (req, res) => {
     const {messageID, parentMessageID} = req.body;
-    console.log(messageID, parentMessageID);
 
     if (!messageID || !parentMessageID) {
         throw new appError(FIELD_MISSING, "Field is missing.", 401);
@@ -536,5 +566,11 @@ router.post('/api/deleteMessage', tryCatch(async (req, res) => {
     message.save();
     res.json({message: "Message deleted successfully", status: "ok"});
 }));
+
+router.get('/api/getUser/:id', tryCatch(async (req, res) => {
+    const otherUser = await User.findOne({username: req.params.id}, {username: 1, photo: 1});
+    res.json(otherUser);
+}));
+
 
 module.exports = router;
