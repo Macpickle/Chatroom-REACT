@@ -5,13 +5,14 @@ import SearchUser from '../components/searchUser';
 import axios from 'axios';
 
 function Subscreen({closeSubscreen, title, method}) {
+    // the subscreen options and functionality
     const [photo, setphoto] = useState('');
     const [blocked, setblocked] = useState([]);
     const [users, setUsers] = useState([]);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        //fetch users
+        // fetch users, allows for searching
         axios.get('http://localhost:3000/api/users')
             .then(response => {
                 setUsers(response.data);
@@ -21,6 +22,7 @@ function Subscreen({closeSubscreen, title, method}) {
             });
     }, []);
 
+    // if the subscreen setting is "Photo", change params based on the option
     useEffect(() => {
         if (method === "Photo") {
             axios.get('http://localhost:3000/api/profilepicture/' + localStorage.getItem('username'))
@@ -34,6 +36,7 @@ function Subscreen({closeSubscreen, title, method}) {
         }
     }); 
 
+    // if the subscreen setting is "Blocked", change params based on the option
     useEffect(() => {
         if (method === "Blocked") {
             axios.get('http://localhost:3000/api/blocked/' + localStorage.getItem('username'))
@@ -47,6 +50,8 @@ function Subscreen({closeSubscreen, title, method}) {
         }
     }, [method])
 
+    // for the blocked functionallity, finds if current user has a person blocked and displays it in the blocked array.
+    // allows for user to change from state of blocked to unblocked.
     function blockUser(e, value) {
         let otherUser = "";
         if (!value) {
@@ -62,6 +67,7 @@ function Subscreen({closeSubscreen, title, method}) {
             setblocked(response.data.blocked);
         })
         .catch(error => {
+            // create an error message event
             const { message } = error.response.data;
             setError(message);
 
@@ -78,6 +84,7 @@ function Subscreen({closeSubscreen, title, method}) {
         });
     }
 
+    // allows functionallity to the blocked menu, switches blocked state if clicked.
     useEffect(() => {
         if (method === "Blocked") {
             const handleKeyDown = (e) => {
@@ -102,14 +109,15 @@ function Subscreen({closeSubscreen, title, method}) {
         }
     }, [method]);
 
+    // resets colour if error exists, and is changed.
     const resetColour = (e) => {
         e.target.style.borderBottom = "";
         e.target.style.color = "";
         setError('');
     }
 
+    // loads file submitted for photo changes, not working cause imgur hates me
     const loadFile = async () => {
-        //test later think i did it but imgur limit
         const fileInput = document.getElementById('file-input');
         const file = fileInput.files[0];
         const formData = new FormData();
@@ -128,8 +136,9 @@ function Subscreen({closeSubscreen, title, method}) {
         
     }
 
+    // for deleting a user, checks if the password value is equal to the current user's password
+    // if the same, will delete user from database
     const deleteUser = () => {
-        console.log(document.getElementById('confirm').value);
         axios.post('http://localhost:3000/api/delete', {
             username: localStorage.getItem('username'),
             password: document.getElementById('confirm').value
@@ -137,6 +146,7 @@ function Subscreen({closeSubscreen, title, method}) {
             localStorage.clear();
             window.location.reload();
         }).catch(error => {
+            // create an error message event
             const { message } = error.response.data;
             setError(message);
 

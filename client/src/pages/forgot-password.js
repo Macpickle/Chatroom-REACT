@@ -3,6 +3,7 @@ import axios from 'axios';
 import "../stylesheet/style.css";
 import "../stylesheet/password-reset.css";
 
+// still technically wip, need to actually add a email functionallity to it (old email was locked out and cannot log back in T-T)
 function ForgotPassword() {
     const [email, setEmail] = useState('');
 
@@ -10,7 +11,7 @@ function ForgotPassword() {
         e.preventDefault();
         axios.post('http://localhost:3000/api/forget-password', { email: email })
             .then(res => {
-                //success
+                // success to show to user
                 const { status, message } = res.data;
                 console.log(status, message);
             })

@@ -6,6 +6,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
+// message menu
 export default function MessageBox({messageID, socketConnection, showSidebar}) {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
@@ -14,28 +15,20 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
     const [replying, setReply] = useState('');
     const [blocked, setBlocked] = useState(false);
 
-    /*
-    *   changes state of editing message, while also setting the editMessageID
-    *   returns void
-    */
-   const editMessage = (data) => {
-        setEditID(data)
-   };
 
-   /*
-   *    displays reply prompt
-   *    returns void
-   */
-   const replyMessage = (messageID, parentID) => {
+    // changes state of editing message, while also setting the editMessageID
+    const editMessage = (data) => {
+         setEditID(data)
+    };
+
+    // displays reply prompt if message was a reply to another
+    const replyMessage = (messageID, parentID) => {
         axios.get('http://localhost:3000/api/findMessage/' + messageID + '/' + parentID)
-        
         .then(response => {
             const message = document.getElementById(response.data._id);
-
             setReply(response.data);
             document.getElementById('message-text-box').focus();
             message.style.backgroundColor = document.documentElement.style.getPropertyValue("--background-hover");
-            
             function handleKeydown (e) {   
                 if (e.key === "Escape") {
                     document.removeEventListener('keydown', handleKeydown);
@@ -43,19 +36,15 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
                     message.style.backgroundColor = '';
                 }
             };
-
             document.addEventListener('keydown', handleKeydown);
         })
         .catch(error => {
             console.error(error);
         });
         setReply(messageID);     
-   };
+    };
 
-    /*
-    *   retrieves messageID's message content
-    *   returns void
-    */
+    // retrieves messageID's message content
     const getMessages = useCallback(() => {
         if (!messageID) return;
 
@@ -85,10 +74,8 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
         }
     }, [messageID, blocked]);
 
-    /*
-    *   sends message to database, then shows via websocket
-    *   returns void
-    */
+    
+    // sends message to database, then shows via websocket
     const sendMessage = (chatbotMessage) => {
         axios.post(`http://localhost:3000/api/message`, {
             members: [localStorage.getItem('username'), localStorage.getItem('otherUser')],

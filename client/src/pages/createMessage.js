@@ -4,13 +4,13 @@ import "../stylesheet/message.css";
 import SearchUser from '../components/searchUser';
 import axios from 'axios';
 
-//closeMessage function from sidenav.js, closes this component
+// closeMessage function from sidenav.js, closes this component
 function CreateMessage({closeMessage, getMessages}) {
     const [message, setMessage] = useState("");
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
-        //fetch users
+        // fetch users data, for searching users
         axios.get('http://localhost:3000/api/users')
             .then(response => {
                 setUsers(response.data);
@@ -20,6 +20,7 @@ function CreateMessage({closeMessage, getMessages}) {
             });
     }, []);
 
+    // formats a new message and sends to backend, if success, fetch all messages again.
     function createNewMessage() {
         const user = localStorage.getItem('username')
         const reciever = document.getElementById('search-input').value
@@ -33,6 +34,7 @@ function CreateMessage({closeMessage, getMessages}) {
             getMessages();
             
         }).catch((error) => {
+            // create an error message event
             const { message } = error.response.data
             
             if (message === 'Reciever is empty!') {
@@ -65,6 +67,7 @@ function CreateMessage({closeMessage, getMessages}) {
         )
     }
 
+    // resets colour upon change, if there is an error present
     const resetColor = (e) => {
         e.target.style.color = '';
         e.target.style.borderBottom = '';

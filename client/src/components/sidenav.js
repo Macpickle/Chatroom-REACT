@@ -1,6 +1,6 @@
 import "../stylesheet/style.css";
 import "../stylesheet/sidenav.css";
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import CreateMessage from "../pages/createMessage";
@@ -11,10 +11,10 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Sidenav({setMessageIdHandler, showSidebar}) {    
     const [users, setUsers] = useState([]);
-    const [otherUserPhoto, setUserPhoto] = useState('');
+    //const [otherUserPhoto, setUserPhoto] = useState(''); //not in use currently
     const navigate = useNavigate();
 
-    //handle sending message id to parent
+    // handle sending message id to parent
     function handleClick(id, e) {
         localStorage.setItem('otherUser', e);
         setMessageIdHandler(id);
@@ -24,10 +24,7 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
     const [loading, setLoading] = useState(true);
     const [showCreateMessage, setShowCreateMessage] = useState(false);
 
-    /*
-    *   retrieves messages from the server that user has
-    *   returns voidd
-    */
+    //  retrieves messages from the server that user has
     const getMessages = () => {
         axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'), { withCredentials: true })
             .then(response => {
@@ -46,13 +43,13 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
         });
     };
     
-    //populate messages
+    // populate messages
     useEffect(() => {
         getMessages();
     }, []);
 
     useEffect(() => {
-        //fetch users
+        // fetch users data, gets user's messages
         axios.get('http://localhost:3000/api/messageUsers/' + localStorage.getItem('username'))
             .then(response => {
                 const users = response.data;
@@ -63,6 +60,7 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
             });
     }, []);
 
+    // for searching a specific sidenav message, opens if found
     function findMessage(user, handler, otherUser) {
         messages.forEach(message => {
             if (message.members.includes(user)) {
@@ -73,6 +71,7 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
         });
     }
 
+    // allows functionallity to the searchbar in sidenav, upon any option, attempt to find the message.
     useEffect(() => {
         document.getElementById('search-input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
@@ -89,12 +88,12 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
         });
     });
 
-    //create new message
+    // create new message
     function createMessage() {
         setShowCreateMessage(true);
     }
 
-    //close create message
+    // close create message
     function closeMessage() {
         setShowCreateMessage(false);
     }

@@ -2,14 +2,16 @@ import '../stylesheet/search.css';
 import React, { useEffect } from 'react';
 import AutoComplete from '../utils/autocomplete';
 
+//  a template for searching users in database, requires an array of users
 function SearchUser({users, placeholder, padding}) {
+    // resets if error exists in search
     const resetColor = (e) => {
         e.target.style.color = '';
         e.target.style.borderBottom = '';
     }
 
     useEffect(() => {
-        //remove search results when component has no users
+        // remove search results when component has no users
         document.getElementById('search-results').style.display = 'none';
     });
     

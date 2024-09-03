@@ -5,10 +5,12 @@ import { useNavigate} from 'react-router-dom';
 import axios from "axios";
 
 export default function Navbar() {
+    // for current user data (photo)
     const [user, setUser] = useState('')
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    // logout funcitonallity, fully removes user session and localstorage data
     const logoutUser = () => {
         localStorage.clear();
         axios.get('http://localhost:3000/api/logout').then(() => {
@@ -16,6 +18,7 @@ export default function Navbar() {
         });
     }
 
+    // gets current user data
     useEffect(() => {
         axios.get("http://localhost:3000/api/users/" + localStorage.getItem('username'))
         .then(response => {

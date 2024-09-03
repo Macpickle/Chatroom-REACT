@@ -7,10 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Account() {
+  // for data showing
   const [user, setUser] = useState({});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // fetches user data, and sets loading to false to show data
   useEffect(() => {
       axios.get('http://localhost:3000/api/users/' + localStorage.getItem('username'))
       .then((res) => {

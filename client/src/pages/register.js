@@ -5,15 +5,18 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function Register() {
+    // for input fields, updates upon changes
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const navigate = useNavigate();
 
+    // attempts to create a user and save to database
+    // then creates a premade message with a chatbot, if usercreation was successful
     const submitForm = (e) => {
         e.preventDefault();
-        //make a fetch request to the server
+        // make a fetch request to the server to create a user
         axios.post('http://localhost:3000/api/register', {
             username: username,
             email: email,
@@ -21,7 +24,7 @@ function Register() {
             confirmPassword: confirmPassword
         }
         ).then((res) => {
-            //create a message with the chatbot
+            // create a message with the chatbot
             axios.post('http://localhost:3000/api/messages', {
                 members: [res.data.username, 'Chatbot'],
                 message: 'Hello! I am the chatbot. How can I help you today?',
@@ -31,9 +34,8 @@ function Register() {
                 navigate('/', { state: { username: res.data.username } });
             });
         }).catch((err) => {
-            //create an error message event
+            // create an error message event
             const { message } = err.response.data;
-            console.log(err.response.data);
 
             if (message === "Please fill in all fields") {
                 document.querySelectorAll('.login-input input').forEach(element => {
@@ -67,7 +69,7 @@ function Register() {
         });
     }
 
-    //reset the color of the input fields, eg. to revert from errors
+    // reset the color of the input fields, eg. to revert from errors
     const resetColor = (e) => {
         e.target.style.color = '';
         e.target.style.borderBottom = '';

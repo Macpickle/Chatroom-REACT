@@ -5,27 +5,29 @@ import { useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 function Login() {
+    // login input states, saves upon change
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loginRemember, setLoginRemember] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
+    // deals with attempting users to login
     const submitForm = (e) => {
         e.preventDefault();
-        //make a fetch request to the server
+        // make a fetch request to the server to attempt a login
         axios.post('http://localhost:3000/api/login', {
             username: username,
             password: password,
             remember: loginRemember,
         }, { withCredentials: true }).then((res) => {
-            //redirect to the home page
+            // redirect to the home page upon a successful login, sets localstorage values
             localStorage.setItem('remember', loginRemember);
             localStorage.setItem('username', res.data.username);
             navigate('/');
 
         }).catch((err) => {
-            //create an error message event
+            // create an error message event
             const { message } = err.response.data;
 
             if (message === "Please fill in all fields") {
@@ -48,7 +50,7 @@ function Login() {
         });
     }
 
-    //if the user is redirected from the register page, set the username in the input field
+    // if the user is redirected from the register page, set the username in the input field
     useEffect(() => {
         if (location.state) {
             setUsername(location.state.username);
@@ -56,6 +58,7 @@ function Login() {
         }
     }, [location]);
 
+    // resets colour upon changes to input, used to reset if error was present
     const resetColor = (e) => {
         e.target.style.color = '';
         e.target.style.borderBottom = '';

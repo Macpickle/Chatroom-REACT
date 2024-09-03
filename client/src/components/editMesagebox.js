@@ -4,7 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit, faEllipsis, faReply } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios';
 
+// for extra functionallity to messages, allows for editing, deleting, replying and more functions.
 export default function EditMessageBox({messageID, parentMessageID, getMessages, socketConnection, editMessage, replyMessage, owner}) {
+    // deals with deleting message from a database
     const deleteMessage = () => {
         axios.post('http://localhost:3000/api/deleteMessage', {
             messageID: messageID,

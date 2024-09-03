@@ -11,11 +11,11 @@ import theme from '../themeSetter.js';
 
 function Settings() {
   const navigate = useNavigate();
-  const [status, setStatus] = useState('');
-  const [subscreen, setSubscreen] = useState(false);
-  const [error, setError] = useState(''); // for error messaging
+  const [status, setStatus] = useState(''); // for flashing errors, then removing it after flashed
+  const [subscreen, setSubscreen] = useState(false); // allows for subscreen to be shown if activated
+  const [error, setError] = useState(''); // for flashing error messaging
   const [title, setTitle] = useState(''); // for subscreen title element
-  const [method, setMethod] = useState(''); // for subscreen, responsible on changing subscreen based on what method is used
+  const [method, setMethod] = useState(''); // for subscreen, responsible on changing subscreen data based on what method is used
 
   const [formData, setFormData] = useState({
     username: '',
@@ -27,8 +27,9 @@ function Settings() {
     theme: '',
     language: '',
     deleteAccount: ''
-  });
+  }); // allows for changes to setting options, used for backend comparison
 
+  // handles changes to setting options, updates if changed.
   function handleChange(event) {
     const { name, value } = event.target;
     setFormData(prevState => ({
@@ -36,12 +37,13 @@ function Settings() {
       [name]: value
     }));
 
-    //reset colouring if error message is present
+    // reset colouring if error message is present
     event.target.style.borderBottom = "";
     event.target.style.color = "";
     setError('');
   }
 
+  // submits formData to backend, allows for changes to settings.
   function submitForm(event) {
     event.preventDefault();
     axios.post('http://localhost:3000/api/settings', {
@@ -50,10 +52,11 @@ function Settings() {
     }).then(response => {
       setStatus(response.data.message);
 
-      //sets theme, if changed will update the pages' theme
+      // sets theme, if changed will update the pages' theme
       theme();
 
     }).catch(error => {
+      // error handling for users
       const {message} = error.response.data;
       setError(message);
 
@@ -89,6 +92,7 @@ function Settings() {
     });
   }
 
+  // checks if status is present, if so remove the alert after 5000 ms
   useEffect(() => {
     if (status) {
       setTimeout(() => {
@@ -97,6 +101,7 @@ function Settings() {
     }
   }, [status]);
 
+  // sets subscreen if selected
   function showSubscreen(val) {
     setSubscreen(true);
     if (val === "Blocked"){
@@ -110,10 +115,11 @@ function Settings() {
       setTitle("Deleting Account...");
       setMethod(val);
     } else {
-      //unknown method
+      // wont have another selection, but here for safety
     }
   }
 
+  // handles closing subscreen
   function closeSubscreen() {
     setSubscreen(false);
   }
