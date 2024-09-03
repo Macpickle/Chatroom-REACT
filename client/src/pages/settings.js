@@ -13,9 +13,9 @@ function Settings() {
   const navigate = useNavigate();
   const [status, setStatus] = useState('');
   const [subscreen, setSubscreen] = useState(false);
-  const [error, setError] = useState(''); //for error messaging
-  const [title, setTitle] = useState(''); //for subscreen title element
-  const [method, setMethod] = useState(''); //for subscreen, responsible on changing subscreen based on what method is used
+  const [error, setError] = useState(''); // for error messaging
+  const [title, setTitle] = useState(''); // for subscreen title element
+  const [method, setMethod] = useState(''); // for subscreen, responsible on changing subscreen based on what method is used
 
   const [formData, setFormData] = useState({
     username: '',

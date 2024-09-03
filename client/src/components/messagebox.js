@@ -89,7 +89,7 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
     *   sends message to database, then shows via websocket
     *   returns void
     */
-    const sendMessage = () => {
+    const sendMessage = (chatbotMessage) => {
         axios.post(`http://localhost:3000/api/message`, {
             members: [localStorage.getItem('username'), localStorage.getItem('otherUser')],
             message: input,
@@ -99,6 +99,23 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
         }).then(response => { 
             setReply('');
             socketConnection.emit('message', response.data.messageContent, parentID);
+
+            if (chatbotMessage) {
+                axios.post(`http://localhost:3000/api/chatTest`, {
+                    body: {
+                        members: [localStorage.getItem('username'), localStorage.getItem('otherUser')],
+                        message: response.data.messageContent,
+                        sender: localStorage.getItem('otherUser'),
+                        reciever: localStorage.getItem('username'),
+                    }
+                }).then(response => {
+                    setReply('');
+                    socketConnection.emit('message', response.data.messageContent, parentID);
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+
         });
     };
 
@@ -224,7 +241,13 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
                     <p className = "blocked">you or another user has blocked this chat!</p>
                 )}
                 <input id = "message-text-box" type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} disabled={blocked}/>
-                <button className="send-button" onClick = {() => sendMessage()} disabled={blocked}>
+                <button className="send-button" onClick = {() => 
+                    {
+                        var aiMessage = false;
+                        if (localStorage.getItem('otherUser') === "Chatbot") {aiMessage = true}
+                        sendMessage(aiMessage);                    
+                    }
+                } disabled={blocked}>
                     <div className="tooltip">
                         <h2>Send</h2>
                         <span className="tooltiptext">Send Message</span>

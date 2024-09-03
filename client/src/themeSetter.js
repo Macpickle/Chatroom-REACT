@@ -1,8 +1,8 @@
 import axios from 'axios';
 import './stylesheet/theme.css';
 
+// gets the current user's theme, then sets colours based on option
 const theme = () => {
-    //get the user theme
     if (localStorage.getItem('username')){
         axios.get('http://localhost:3000/api/theme/' + localStorage.getItem('username'))
             .then(response => {

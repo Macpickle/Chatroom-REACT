@@ -21,8 +21,15 @@ function Register() {
             confirmPassword: confirmPassword
         }
         ).then((res) => {
-            //on success, navigate to the login page
-            navigate('/', { state: { username: res.data.username } });
+            //create a message with the chatbot
+            axios.post('http://localhost:3000/api/messages', {
+                members: [res.data.username, 'Chatbot'],
+                message: 'Hello! I am the chatbot. How can I help you today?',
+                sender: 'Chatbot',
+                reciever: res.data.username
+            }).then(() => { 
+                navigate('/', { state: { username: res.data.username } });
+            });
         }).catch((err) => {
             //create an error message event
             const { message } = err.response.data;
@@ -39,10 +46,10 @@ function Register() {
             }
 
             if (message === "Passwords do not match") {
-                document.querySelectorAll('#password').forEach(element => {
-                    element.style.color = 'red';
-                    element.style.borderBottom = '1px solid red';
-                });
+                document.querySelector('#password').style.color = 'red';
+                document.querySelector('#password').style.borderBottom = '1px solid red';
+                document.querySelector('#passwordConfirm').style.color = 'red';
+                document.querySelector('#passwordConfirm').style.borderBottom = '1px solid red';
                 document.getElementById('error-message').innerText = message;
             };
 
@@ -78,7 +85,7 @@ function Register() {
                     <input type="text" placeholder="Username" autoComplete="on" onChange={(e) => setUsername(e.target.value)} onFocus={resetColor} />
                     <input type="email" placeholder="Email" autoComplete="on" onChange={(e) => setEmail(e.target.value)} onFocus={resetColor} />
                     <input id="password" type="password" placeholder="Password" autoComplete="on" onChange={(e) => setPassword(e.target.value)} onFocus={resetColor} />
-                    <input id="password" type="password" placeholder="Confirm Password" autoComplete="on" onChange={(e) => setConfirmPassword(e.target.value)} onFocus={resetColor} />
+                    <input id="passwordConfirm" type="password" placeholder="Confirm Password" autoComplete="on" onChange={(e) => setConfirmPassword(e.target.value)} onFocus={resetColor} />
                     <button type="submit" onClick={submitForm}>SIGN UP</button>
                 </div>
 

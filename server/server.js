@@ -1,18 +1,24 @@
 require('dotenv').config(); // for envconst IN_PRODUCTION = process.env.NODE_ENV === 'production';
 
+// server imports
 const express = require('express');
 const app = express();
-const externalRouter = require('./routes/routes');
 const errorHandler = require('./middleware/errorHandler');
 const cors = require('cors');
-const flash = require('express-flash');
 const passport = require('passport');
 const initpassport = require('./utils/passport-config');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const mongoose = require('mongoose');
 
-//socket server
+//models
+const User = require('./models/Users');
+
+//routes
+const externalRouter = require('./routes/routes');
+const userManagement = require('./routes/userManagement')
+
+//socket server allows for live updates to elements (messages, replies, etc...)
 const http = require('http');
 const Server = require('socket.io').Server;
 const server = http.createServer(app);
@@ -26,9 +32,7 @@ const io = new Server(server,
     }
 );
 
-//models
-const User = require('./models/Users');
-
+// cors for client usage
 app.use(cors({
     origin: ['http://localhost:3001',
         'http://localhost:3000'],
@@ -36,16 +40,16 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
-
+// allows for session to be held in production if need
 const IN_PRODUCTION = process.env.NODE_ENV === 'production';
 
-//connects mongoose to the mongoDB database
+// connects mongoose to the mongoDB database
 mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
 
-//creates a new session store to store sessions from users
+// creates a new session store to store sessions from users
 const store = new MongoDBStore({
     mongooseConnection: process.env.DATABASE_URL,
     databaseName: 'chatApp',
@@ -68,11 +72,9 @@ app.use(session({
     }
 ));
 
-app.use(flash());
-
-//initialize passport
 app.use(express.json());
 
+//initialize passport
 initpassport(
     passport,
     async username => await User.findOne({ username: username }),
@@ -84,6 +86,7 @@ app.use(passport.session());
 app.use(express.urlencoded({extended: false}));
 
 app.use(externalRouter);
+app.use(userManagement);
 app.use(errorHandler);
 
 //socket server
@@ -91,7 +94,6 @@ io.on('connection', (socket) => {
     console.log("USER CONNECT: " + socket.id);
 
     socket.on('join', (data) => {
-        console.log("joined: " + data);
         socket.join(data);
     })
 

@@ -92,13 +92,27 @@
 
 .sidenav-container .sidenav-list .sidenav-item .details {
     margin-left: 0.5rem;
-    width: 50%;
+    width: 100%;
 }
 
 .sidenav-container .sidenav-list .sidenav-item .details h3 {
     font-size: 1.5rem;
     font-weight: 300;
     color: var(--text-colour);
+}
+
+.sidenav-container .sidenav-list .sidenav-item .details .reply-container {
+    max-width: 7.5rem;
+    display: flex;
+    flex-direction: row;
+}
+
+.sidenav-container .sidenav-list .sidenav-item .details .reply-container .reply-max-width {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: fit-content;
+    white-space: nowrap;
 }
 
 .sidenav-container .sidenav-list .sidenav-item .details p {

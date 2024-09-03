@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Sidenav({setMessageIdHandler, showSidebar}) {    
     const [users, setUsers] = useState([]);
+    const [otherUserPhoto, setUserPhoto] = useState('');
     const navigate = useNavigate();
 
     //handle sending message id to parent
@@ -30,6 +31,7 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
     const getMessages = () => {
         axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'), { withCredentials: true })
             .then(response => {
+                console.log("test")
                 setMessages(response.data);
                 setLoading(false);
             })
@@ -122,7 +124,7 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
                     </div>
                 </div>
                 {loading ? (
-                    <div></div>
+                    <div>LOADING</div>
                 ) : (
                     <div className="sidenav-list">
                         {messages.map((message, index) => (
@@ -134,7 +136,9 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
                                     <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
                                     <div className="details">
                                         <h3>{message.members.filter(member => member !== localStorage.getItem('username'))[0]}</h3>
-                                        <p>{message.recentMessage}</p>
+                                        <div className = "reply-container">
+                                            <p className= "reply-max-width">{message.recentMessage}</p>
+                                        </div>
                                     </div>
                                     <div className="time">
                                         <p>{message.recentMessageTime}</p>

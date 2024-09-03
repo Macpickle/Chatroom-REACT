@@ -11,7 +11,7 @@ import React from 'react';
 import theme from './themeSetter';
 
 function App() {
-    //set theme on app load
+    // set theme on app load
     useEffect(() => {
         theme();
     }, []);
