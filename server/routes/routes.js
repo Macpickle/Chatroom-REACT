@@ -41,6 +41,7 @@ router.post('/api/reset-password', resetPassword);
 router.get('/api/messages', tryCatch(async (req, res) => {
     const { username, messageID } = req.query;
     var messages = [];
+    var otherMembersPhotos = [];
     if (username) {
         messages = await Message.find({ members: username });
     } else if (messageID) {
@@ -50,23 +51,37 @@ router.get('/api/messages', tryCatch(async (req, res) => {
     if (!messages) {
         throw new appError(CHAT_NOT_FOUND, 'Chat not found', 401);
     }
+    
+    for (let i = 0; i < messages.members.length; i++) {
+        const user = await User.findOne({ username: messages.members[i] }, { photo: 1, username: 1 });
+        otherMembersPhotos.push({username: user.username, photo: user.photo});
+    }
 
-    res.json(messages);
+    res.json({messages, otherMembersPhotos});
 }));
 
 // checks if passport session user is equal to current user in localstorage (sent through params)
 router.get('/api/messages/:id', tryCatch(async (req, res) => {
-    console.log(req.user); //randomly stops working???????
-
     const message = await Message.find({members: req.params.id});
     if (!req.user) {
-        return [];
+        throw new appError(INVALID_CREDENTIALS, 'User is not logged in', 401);
     }
 
     if (req.user.username !== req.params.id) {
         throw new appError(INVALID_CREDENTIALS, 'User does not have access to this chat', 401);
     }
-    res.json(message);
+    var otherMembersPhotos = [];
+    for (let i = 0; i < message.length; i++) {
+        for (let j = 0; j < message[i].members.length; j++) {
+            const user = await User.findOne({ username: message[i].members[j] }, { photo: 1, username: 1 });
+            if (user.username !== req.user.username) {
+                otherMembersPhotos.push({username: user.username, photo: user.photo});
+            }
+        }
+    }
+
+
+    res.json({message, otherMembersPhotos});
 }));
 
 // checks if current user or other user has blocked the current user

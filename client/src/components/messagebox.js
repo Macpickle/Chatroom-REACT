@@ -14,7 +14,7 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
     const [editMessageID, setEditID] = useState('');
     const [replying, setReply] = useState('');
     const [blocked, setBlocked] = useState(false);
-
+    const [otherMembersPhotos, setOtherMembersPhotos] = useState([]);
 
     // changes state of editing message, while also setting the editMessageID
     const editMessage = (data) => {
@@ -54,9 +54,11 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
                 }
             })
             .then(response => {
-                setMessages(response.data.messages);
-                setParentID(response.data._id);
-                socketConnection.emit('join', response.data._id);
+                const { messages, otherMembersPhotos } = response.data;
+                setMessages(messages.messages);
+                setParentID(messages.messages._id);
+                setOtherMembersPhotos(otherMembersPhotos);
+                socketConnection.emit('join', messages.messages._id);
             })
             .catch(error => {
                 console.error(error);
@@ -85,6 +87,7 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
             reply: replying,
         }).then(response => { 
             setReply('');
+            setInput('');
             socketConnection.emit('message', response.data.messageContent, parentID);
 
             if (chatbotMessage) {
@@ -168,7 +171,7 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
                 messages.map((message, index) => (
                     <div className="message" key={index} id = {message._id}>
                         <div className="profile-pic">
-                            <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
+                            <img src={(otherMembersPhotos.filter(messageOwner => messageOwner.username === message.sender))[0].photo} alt="Avatar" />
                         </div>
                         <div className="message-text">
                             <div className="message-header">
@@ -227,7 +230,7 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
                 {blocked && (
                     <p className = "blocked">you or another user has blocked this chat!</p>
                 )}
-                <input id = "message-text-box" type="text" placeholder="Type a message..." value={input} onChange={(e) => setInput(e.target.value)} disabled={blocked}/>
+                <input id = "message-text-box" type="text" placeholder="Type a message..." autoComplete="false" value={input} onChange={(e) => setInput(e.target.value)} disabled={blocked}/>
                 <button className="send-button" onClick = {() => 
                     {
                         var aiMessage = false;

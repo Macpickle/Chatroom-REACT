@@ -28,6 +28,10 @@ function Login() {
 
         }).catch((err) => {
             // create an error message event
+            if (typeof err.response === 'undefined') {
+                document.getElementById('error-message').innerText = "Server is down, please try again later.";
+                return;
+            }
             const { message } = err.response.data;
 
             if (message === "Please fill in all fields") {

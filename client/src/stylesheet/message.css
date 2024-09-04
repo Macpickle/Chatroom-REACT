@@ -71,6 +71,7 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
+    aspect-ratio: 1/1;
 }
 
 .message-container .message-content .message .message-body {

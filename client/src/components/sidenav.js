@@ -21,6 +21,7 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
     }
 
     const [messages, setMessages] = useState([]);
+    const [otherMembersPhotos, setOtherMembersPhotos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showCreateMessage, setShowCreateMessage] = useState(false);
 
@@ -28,19 +29,15 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
     const getMessages = () => {
         axios.get('http://localhost:3000/api/messages/' + localStorage.getItem('username'), { withCredentials: true })
             .then(response => {
-                console.log("test")
-                setMessages(response.data);
+                const {message, otherMembersPhotos} = response.data;
+                setMessages(message);
+                setOtherMembersPhotos(otherMembersPhotos);
                 setLoading(false);
+                
             })
             .catch(error => {
-                const {message} = error.response.data
-                if (message === "User was not set properly.") {
-                    localStorage.clear();
-                    axios.get('http://localhost:3000/api/logout').then(() => {
-                        navigate('/login');
-                    });
-                }
-        });
+                console.error(error);
+            });
     };
     
     // populate messages
@@ -123,28 +120,34 @@ export default function Sidenav({setMessageIdHandler, showSidebar}) {
                     </div>
                 </div>
                 {loading ? (
-                    <div>LOADING</div>
+                    <div className = "load">
+                        <div className="loader"></div>
+                    </div>
                 ) : (
                     <div className="sidenav-list">
-                        {messages.map((message, index) => (
-                            <button className="sidenav-button" key={index} onClick={() => {
-                                showSidebar(true); 
-                                handleClick(message._id, message.members.filter(member => member !== localStorage.getItem('username'))[0]);
-                            }}>
-                                <div className="sidenav-item">
-                                    <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" />
-                                    <div className="details">
-                                        <h3>{message.members.filter(member => member !== localStorage.getItem('username'))[0]}</h3>
-                                        <div className = "reply-container">
-                                            <p className= "reply-max-width">{message.recentMessage}</p>
+                        {messages.map((message, index) => {
+                            const otherUser = message.members.filter(member => member !== localStorage.getItem('username'))[0];
+                            const otherUserPhoto = otherMembersPhotos.find(photo => photo.username === otherUser)?.photo;
+                            return (
+                                <button className="sidenav-button" key={index} onClick={() => {
+                                    showSidebar(true); 
+                                    handleClick(message._id, otherUser);
+                                }}>
+                                    <div className="sidenav-item">
+                                        <img src={otherUserPhoto} alt="Avatar" />
+                                        <div className="details">
+                                            <h3>{otherUser}</h3>
+                                            <div className = "reply-container">
+                                                <p className= "reply-max-width">{message.recentMessage}</p>
+                                            </div>
+                                        </div>
+                                        <div className="time">
+                                            <p>{message.recentMessageTime}</p>
                                         </div>
                                     </div>
-                                    <div className="time">
-                                        <p>{message.recentMessageTime}</p>
-                                    </div>
-                                </div>
-                            </button>
-                        ))}
+                                </button>
+                            );
+                        })}
                     </div>
                 )}
             </div>

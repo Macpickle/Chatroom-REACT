@@ -18,6 +18,11 @@ const User = require('./models/Users');
 const externalRouter = require('./routes/routes');
 const userManagement = require('./routes/userManagement')
 
+// for cors configuration
+const origin = process.env.NODE_ENV === "development" 
+    ? "http://localhost:3001"
+    : "https://chatapp.com";
+
 //socket server allows for live updates to elements (messages, replies, etc...)
 const http = require('http');
 const Server = require('socket.io').Server;
@@ -25,19 +30,18 @@ const server = http.createServer(app);
 const io = new Server(server,
     {
         cors: {
-            origin: 'http://localhost:3001',
+            origin: origin,
             methods: ['GET', 'POST'],
             credentials: true,
+            'Access-Control-Allow-Credentials': true,
         }
     }
 );
 
 // cors for client usage
 app.use(cors({
-    origin: ['http://localhost:3001',
-        'http://localhost:3000'],
+    origin: origin,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
 // allows for session to be held in production if need
@@ -58,13 +62,12 @@ const store = new MongoDBStore({
 
 // stores session data
 app.use(session({
-    name: 'sid',
     resave: false,
     saveUninitialized: false,
     secret: process.env.SECRET_KEY,
     store: store,
     cookie: {
-        maxAge: 60 * 60 * 24,
+        maxAge: 60 * 60 * 24 * 1000,
         sameSite: true,
         secure: IN_PRODUCTION,
         domain: 'localhost',
