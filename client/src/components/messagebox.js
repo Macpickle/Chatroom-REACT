@@ -56,9 +56,9 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
             .then(response => {
                 const { messages, otherMembersPhotos } = response.data;
                 setMessages(messages.messages);
-                setParentID(messages.messages._id);
+                setParentID(messages._id);
                 setOtherMembersPhotos(otherMembersPhotos);
-                socketConnection.emit('join', messages.messages._id);
+                socketConnection.emit('join', messages._id);
             })
             .catch(error => {
                 console.error(error);
@@ -119,7 +119,7 @@ export default function MessageBox({messageID, socketConnection, showSidebar}) {
     // deals with live updates to users
     useEffect(() => {
         //setMessages(prevMessages => [...prevMessages, data])
-        socketConnection.on('message', (data) => {console.log('recieved: ' + data); setMessages(prevMessages => [...prevMessages, data])});
+        socketConnection.on('message', (data) => {setMessages(prevMessages => [...prevMessages, data])});
         socketConnection.on('delete', (data) => getMessages());
         return () => {
             socketConnection.off('message');

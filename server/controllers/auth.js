@@ -6,7 +6,7 @@ const nodeMailer = require('nodemailer');
 const appError = require('../utils/appError');
 const { tryCatch } = require('../utils/tryCatch');
 const { USER_NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../constants/constants');
-
+//SendGrid
 const forgetPassword = tryCatch(async (req, res) => {
     console.log(req.body);
     const user = await User.findOne({ email: req.body.email });
